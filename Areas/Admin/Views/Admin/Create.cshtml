@@ -1,0 +1,44 @@
+﻿@model JobTracks.Areas.Admin.Data.User
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+<h2>Create User</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Username)
+        @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Username)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email)
+        @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Email)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Password)
+        @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Password)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Role_id)
+        @Html.DropDownListFor(model => model.Role_id, (SelectList)ViewBag.RoleList, "Select Role", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Role_id)
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
