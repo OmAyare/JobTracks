@@ -26,6 +26,12 @@ namespace JobTracks.Areas.Admin.Controllers
             return View(users);
         }
 
+        public ActionResult Company()
+        {
+          var company = db.Company_Master.ToList();
+            return View(company);
+        }
+
         [HttpGet]
         [Route("Admin/User/Create")]
         public ActionResult Create()
