@@ -13,10 +13,15 @@ namespace JobTracks.Areas.Admin.Controllers
     {
         private JobTracksEntities db = new JobTracksEntities();
         // GET: Admin/Admin
-
+        
         [Route("Admin/Dashboard")]
         public ActionResult Dashboard()
         {
+            if (Session["UserId"] == null || (int)Session["RoleId"] != 1)
+            {
+                return RedirectToAction("Index", "Home" , new { area = "" });
+            }
+
             return View();
         }
 
@@ -89,7 +94,7 @@ namespace JobTracks.Areas.Admin.Controllers
             {
                 db.Entry(EmployeeFromDb).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index" ,new { Role_id = tblemployee.Role_id.ToString()});
+                return RedirectToAction("User" ,new { Role_id = tblemployee.Role_id.ToString()});
             }
             return View(tblemployee);
         }
@@ -118,7 +123,7 @@ namespace JobTracks.Areas.Admin.Controllers
             User tblEmployee = db.Users.Find(id);
             db.Users.Remove(tblEmployee);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("User");
         }
 
 
