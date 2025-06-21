@@ -25,17 +25,14 @@ namespace JobTracks.Areas.Admin.Controllers
             return View();
         }
 
+        /************************************** Users ********************************************/
+        #region Users
         public ActionResult User()
         {
             var users = db.Users.ToList();
             return View(users);
         }
 
-        public ActionResult Company()
-        {
-          var company = db.Company_Master.ToList();
-            return View(company);
-        }
 
         [HttpGet]
         [Route("Admin/User/Create")]
@@ -56,7 +53,7 @@ namespace JobTracks.Areas.Admin.Controllers
                 return RedirectToAction("user", new { Role_id = user.Role_id });
             }
 
-            ViewBag.RoleId = new SelectList(db.Roles, "Id", "Name", user.Role_id.ToString()); // Preserve role dropdown
+            ViewBag.RoleId = new SelectList(db.Roles, "Id", "Name", user.Role_id.ToString()); 
 
             return View(user);
         }
@@ -147,6 +144,133 @@ namespace JobTracks.Areas.Admin.Controllers
             }
             return View(rol);
         }
+        #endregion
+        /************************************* Company *******************************************/
+        #region Company
+        [HttpGet]
+        public ActionResult Company()
+        {
+            var JobList = db.Job_Master.ToList();
+            return View(JobList);
+        }
+
+        [HttpGet]
+        public ActionResult CreateCompany() 
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateCompany(Company_Master com)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Company_Master.Add(com);
+                db.SaveChanges();
+                return RedirectToAction("Company");
+            }
+            return View(com);
+        }
+
+        [HttpGet]
+        public ActionResult AssignWork()
+        {
+            ViewBag.CompanyList = new SelectList(db.Company_Master, "Company_id", "Company_Name");
+            ViewBag.TLList = new SelectList(db.Users.Where(x => x.User_id == 2), "User_id", "Username");
+            ViewBag.RecruiterList = new SelectList(db.Users.Where(x => x.User_id == 3), "User_id", "Username");
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AssignWork([Bind(Include = "status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title")] Job_Master job)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Job_Master.Add(job);
+                db.SaveChanges();
+                return RedirectToAction("Company");
+            }
+
+            ViewBag.Company_Id = new SelectList(db.Company_Master, "Company_id", "Company_Name", job.Company_Id.ToString());
+            ViewBag.User_id = new SelectList(db.Users, "User_id", "Username", job.User.ToString());
+            ViewBag.User_id = new SelectList(db.Users, "User_id", "Username", job.User1.ToString());
+            return View(job);
+        }
+
+        // GET: Admin/Admin/Delete/5
+        [HttpGet]
+        [Route("Admin/Compnay/Delete")]
+        public ActionResult AssignWorkDelete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Job_Master tblAssign = db.Job_Master.Find(id);
+            if (tblAssign == null)
+            {
+                return HttpNotFound();
+            }
+            return View(tblAssign);
+        }
+
+        // POST: Admin/Delete/5
+        [HttpPost]
+        public ActionResult AssignWorkDelete(int id)
+        {
+            Job_Master tblAssign = db.Job_Master.Find(id);
+            db.Job_Master.Remove(tblAssign);
+            db.SaveChanges();
+            return RedirectToAction("Company");
+        }
+
+        // GET: Admin/Edit/5
+        [HttpGet]
+        [Route("Admin/Company/Edit")]
+        public ActionResult AssignWorkEdit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+            }
+            Job_Master tblAssign = db.Job_Master.Find(id);
+            if (tblAssign == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.CompanyList = new SelectList(db.Company_Master, "Company_id", "Company_Name");
+            ViewBag.TLList = new SelectList(db.Users.Where(x => x.User_id == 2), "User_id", "Username");
+            ViewBag.RecruiterList = new SelectList(db.Users.Where(x => x.User_id == 3), "User_id", "Username");
+            return View(tblAssign);
+        }
+
+        // POST: Admin/Edit/5
+        [HttpPost]
+        public ActionResult AssignWorkEdit([Bind(Include = "Job_id,status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title")] Job_Master tblAssign)
+        {
+
+            Job_Master Companyfromdb = db.Job_Master.Single(x => x.Job_id == tblAssign.Job_id);
+
+            Companyfromdb.Title = tblAssign.Title;
+            Companyfromdb.Description = tblAssign.Description;
+            Companyfromdb.Tech_Stack = tblAssign.Tech_Stack;
+            Companyfromdb.status = tblAssign.status;
+            Companyfromdb.Company_Id = tblAssign.Company_Id;
+            Companyfromdb.TeamLeader_Id = tblAssign.TeamLeader_Id;
+            Companyfromdb.Recruiter_Id = tblAssign.Recruiter_Id;
+            if (ModelState.IsValid)
+            {
+                db.Entry(Companyfromdb).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Company", new { Job_id = tblAssign.Job_id.ToString() });
+            }
+            return View(tblAssign);
+        }
+
+        #endregion
+        /******************************** Montly Data Report *************************************/
+
+
     }
 }
 

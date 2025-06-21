@@ -124,6 +124,7 @@
     <Compile Include="Areas\Admin\Data\Applicant_Master.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Admin\Data\Job_Mastesr.cs" />
     <Compile Include="Areas\Admin\Data\Company_Master.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
@@ -214,6 +215,11 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Areas\Admin\Views\Admin\CreateCompany.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\Company.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\AssignWork.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\AssignWorkDelete.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\AssignWorkEdit.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
