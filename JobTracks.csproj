@@ -156,6 +156,8 @@
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Areas\Admin\Data\Users.cs" />
+    <Compile Include="Areas\TeamLeader\Controllers\TeamLeaderController.cs" />
+    <Compile Include="Areas\TeamLeader\TeamLeaderAreaRegistration.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -217,9 +219,19 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admin\Views\Admin\CreateCompany.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Company.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\AssignWork.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\AssignWorkDelete.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\AssignWorkEdit.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\web.config" />
+    <Content Include="Areas\TeamLeader\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\Shared\_Layout1.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\Dashboard.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\AssignWorkDelete.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\CreateCompany.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\AssignWork.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\AssignWork.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\Company.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\AssignWorkEdit.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -248,7 +260,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\TeamLeader\Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\TeamLeader\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

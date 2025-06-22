@@ -22,6 +22,8 @@ namespace JobTracks.Areas.Admin.Data
         public Nullable<int> Company_Id { get; set; }
         public Nullable<int> TeamLeader_Id { get; set; }
         public Nullable<int> Recruiter_Id { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public Nullable<System.DateTime> TentativeDate { get; set; }
     
         public virtual Company_Master Company_Master { get; set; }
         public virtual User User { get; set; }

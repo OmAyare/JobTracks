@@ -5,5 +5,31 @@
 
 }
 
-<h2>Dashboard</h2>
+<h3>Admin Dashboard</h3>
 
+<h5>Monthly Report</h5>
+
+<h5>Monthly Job Posting Report</h5>
+
+<canvas id="jobChart" width="400" height="200"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('jobChart').getContext('2d');
+    var jobChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Encode(ViewBag.Months)),
+            datasets: [{
+                label: 'Jobs Posted',
+                data: @Html.Raw(Json.Encode(ViewBag.Counts)),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>

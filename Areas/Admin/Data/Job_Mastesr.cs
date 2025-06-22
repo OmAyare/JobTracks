@@ -11,7 +11,7 @@ namespace JobTracks.Areas.Admin.Data
     [MetadataType(typeof(JobMasterMetaData))]
     public partial class Job_Master
     {
-
+      
     }
 
     public class JobMasterMetaData
@@ -29,6 +29,8 @@ namespace JobTracks.Areas.Admin.Data
 
         [DisplayName("Team Leader")]
         public Nullable<int> Recruiter_Id { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public Nullable<System.DateTime> TentativeDate { get; set; }
 
         [DisplayName("Company Name")]
         public virtual Company_Master Company_Master { get; set; }

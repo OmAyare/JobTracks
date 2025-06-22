@@ -7,7 +7,8 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create") | @Html.ActionLink("Create Role", "Create_Role")
+    @Html.ActionLink("Create New", "Create", "null", new { @class = "btn btn-sm btn-outline-primary" }) | @Html.ActionLink("Create Role", "Create_Role", null, new { @class = "btn btn-sm btn-outline-primary" })
+
 </p>
 <table class="table">
     <tr>
@@ -42,9 +43,13 @@
                 @Html.DisplayFor(modelItem => item.Role.Name)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.User_id }) |
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.User_id }) |
                 @Html.ActionLink("Details", "Details", new { id = item.User_id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.User_id })
+                @Html.ActionLink("Delete", "Delete", new { id = item.User_id })*@
+                <span>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.User_id }, new { @class = "btn btn-sm btn-outline-primary" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.User_id }, new { @class = "btn btn-sm btn-outline-danger" })
+                </span>
             </td>
         </tr>
     }
@@ -52,5 +57,5 @@
 </table>
 
 <div>
-    @Html.ActionLink("Back to List", "Dashboard")
+    @Html.ActionLink("Back to List", "Dashboard", "null", new { @class = "btn btn-sm btn-outline-primary" })
 </div>

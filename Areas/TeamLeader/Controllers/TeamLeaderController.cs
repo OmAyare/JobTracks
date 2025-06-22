@@ -1,29 +1,49 @@
-﻿using JobTracks.Areas.Admin.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.Globalization;
+using JobTracks.Areas.Admin.Data;
 
-namespace JobTracks.Areas.Admin.Controllers
+namespace JobTracks.Areas.TeamLeader.Controllers
 {
-    public class AdminController : Controller
+    public class TeamLeaderController : Controller
     {
-        private JobTracksEntities db = new JobTracksEntities();
-        // GET: Admin/Admin
-        
-        [Route("Admin/Dashboard")]
+        JobTracksEntities db = new JobTracksEntities();
+
+        //Get : TeamLeader/Dashboard
+
+        [Route("TeamLeader/Dashboard")]
         public ActionResult Dashboard()
         {
-            if (Session["UserId"] == null || (int)Session["RoleId"] != 1)
+           // int tlId = (int)Session["UserId"];
+            if (Session["UserId"] == null || (int)Session["RoleId"] != 2)
             {
-                return RedirectToAction("Index", "Home" , new { area = "" });
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            // Simulate fake data if CreatedDate isn't in DB
+            int tlId = (int)Session["UserId"];
+
+            //// Job count per month (raw SQL-safe)
+            //var jobData = db.Job_Master
+            //    .Where(j => j.TeamLeader_Id == tlId)
+            //    .GroupBy(j => j.CreatedDate.Month)
+            //    .Select(g => new {
+            //        MonthNum = g.Key, // this is int like 1, 2, 3
+            //        Count = g.Count()
+            //    })
+            //    .ToList() // switch to LINQ-to-Objects (safe)
+            //    .Select(x => new {
+            //        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(x.MonthNum),
+            //        Count = x.Count
+            //    })
+            //    .ToList();
+
+            //ViewBag.Months = jobData.Select(x => x.Month).ToList();
+            //ViewBag.JobCounts = jobData.Select(x => x.Count).ToList();
             var jobList = db.Job_Master.ToList();
 
             // If you don't have CreatedDate in DB, simulate it
@@ -37,133 +57,30 @@ namespace JobTracks.Areas.Admin.Controllers
             ViewBag.Months = report.Select(x => x.Month).ToList();
             ViewBag.Counts = report.Select(x => x.Count).ToList();
 
+
+           var applicantData = (from ja in db.Job_Applicant_Master
+                     join u in db.Users on ja.Recuriter_ID equals u.User_id
+                     group ja by u.Username into g
+                     select new {
+                         Recruiter = g.Key,
+                         Count = g.Count()
+                     }).ToList();
+
+
+            ViewBag.Recruiters = applicantData.Select(x => x.Recruiter).ToList();
+            ViewBag.ApplicantCounts = applicantData.Select(x => x.Count).ToList();
+
+
+
+
             return View();
 
         }
 
-        /************************************** Users ********************************************/
-        #region Users
-        public ActionResult User()
-        {
-            var users = db.Users.ToList();
-            return View(users);
-        }
-
-
-        [HttpGet]
-        [Route("Admin/User/Create")]
-        public ActionResult Create()
-        {
-            ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name"); // Provide a dropdown for selecting 
-            return View();
-        }
-
-        // POST: Admin/Admin/Create
-        [HttpPost]
-        public ActionResult Create([Bind(Include = "Username,Email,Password,Role_id")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Users.Add(user);
-                db.SaveChanges();
-                return RedirectToAction("user", new { Role_id = user.Role_id });
-            }
-
-            ViewBag.RoleId = new SelectList(db.Roles, "Id", "Name", user.Role_id.ToString()); 
-
-            return View(user);
-        }
-
-        // GET: Admin/Admin/Edit/5
-        [HttpGet]
-        [Route("Admin/User/Edit")]
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            }
-            User user = db.Users.Find(id); // Find user by ID
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.RoleId = new SelectList(db.Roles, "Id", "Name", user.Role_id); // Dropdown for Roles
-            return View(user);
-        }
-
-        // POST: Admin/Admin/Edit/5
-        [HttpPost]
-        public ActionResult Edit([Bind(Include = "User_id,Username,Email,Password,Role_id")] User tblemployee)
-        {
-
-            User EmployeeFromDb = db.Users.Single(x => x.User_id == tblemployee.User_id);
-
-            EmployeeFromDb.Username = tblemployee.Username;
-            EmployeeFromDb.Role_id = tblemployee.Role_id;
-            EmployeeFromDb.Password = tblemployee.Password;
-            EmployeeFromDb.Email = tblemployee.Email;
-            if (ModelState.IsValid)
-            {
-                db.Entry(EmployeeFromDb).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("User" ,new { Role_id = tblemployee.Role_id.ToString()});
-            }
-            return View(tblemployee);
-        }
-
-        // GET: Admin/Admin/Delete/5
-        [HttpGet]
-        [Route("Admin/User/Delete")]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            User tblEmployee = db.Users.Find(id);
-            if (tblEmployee == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tblEmployee);
-        }
-
-        // POST: Admin/Admin/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id)
-        {
-            User tblEmployee = db.Users.Find(id);
-            db.Users.Remove(tblEmployee);
-            db.SaveChanges();
-            return RedirectToAction("User");
-        }
-
-
-        [HttpGet]
-        [ActionName("Create_Role")]
-        [Route("Admin/Role/Create")]
-        public ActionResult Create_Role()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ActionName("Create_Role")]
-        public ActionResult Create_Role(Role rol)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Roles.Add(rol);
-                db.SaveChanges();
-                return RedirectToAction("User");
-            }
-            return View(rol);
-        }
-        #endregion
-        /************************************* Company *******************************************/
+        /************************************** Company ***************************************/
         #region Company
         [HttpGet]
+        [Route("TeamLeaderr/Compnay")]
         public ActionResult Company()
         {
             var JobList = db.Job_Master.ToList();
@@ -171,7 +88,7 @@ namespace JobTracks.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateCompany() 
+        public ActionResult CreateCompany()
         {
             return View();
         }
@@ -198,10 +115,11 @@ namespace JobTracks.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult AssignWork([Bind(Include = "status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title")] Job_Master job)
+        public ActionResult AssignWork([Bind(Include = "status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title,TentativeDate")] Job_Master job)
         {
             if (ModelState.IsValid)
             {
+                job.TentativeDate = Convert.ToDateTime(Request["TentativeDate"]);
                 job.CreatedDate = DateTime.Now;
                 db.Job_Master.Add(job);
                 db.SaveChanges();
@@ -216,7 +134,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         // GET: Admin/Admin/Delete/5
         [HttpGet]
-        [Route("Admin/Compnay/Delete")]
+        [Route("TeamLeaderr/Compnay/Delete")]
         public ActionResult AssignWorkDelete(int? id)
         {
             if (id == null)
@@ -243,7 +161,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         // GET: Admin/Edit/5
         [HttpGet]
-        [Route("Admin/Company/Edit")]
+        [Route("TeamLeaderr/Company/Edit")]
         public ActionResult AssignWorkEdit(int? id)
         {
             if (id == null)
@@ -263,7 +181,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         // POST: Admin/Edit/5
         [HttpPost]
-        public ActionResult AssignWorkEdit([Bind(Include = "Job_id,status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title")] Job_Master tblAssign)
+        public ActionResult AssignWorkEdit([Bind(Include = "Job_id,status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title,TentativeDate")] Job_Master tblAssign)
         {
 
             Job_Master Companyfromdb = db.Job_Master.Single(x => x.Job_id == tblAssign.Job_id);
@@ -285,6 +203,7 @@ namespace JobTracks.Areas.Admin.Controllers
         }
 
         #endregion
+
+
     }
 }
-

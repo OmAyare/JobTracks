@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Areas/TeamLeader/Views/Shared/_Layout1.cshtml";
+}
+
+<h3> Team Leader Dashboard</h3>
+<canvas id="jobChart" width="400" height="200"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('jobChart').getContext('2d');
+    var jobChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Encode(ViewBag.Months)),
+            datasets: [{
+                label: 'Jobs Posted',
+                data: @Html.Raw(Json.Encode(ViewBag.Counts)),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+
+<hr />
+
+<!-- New Recruiter Performance Graph -->
+<h4>Recruiter Work Progress (Applicants Assigned)</h4>
+<canvas id="recruiterChart" height="100"></canvas>
+<script>
+    var ctx2 = document.getElementById('recruiterChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Encode(ViewBag.Recruiters)),
+            datasets: [{
+                label: 'Applicants Assigned',
+                data: @Html.Raw(Json.Encode(ViewBag.ApplicantCounts)),
+                backgroundColor: 'rgba(255, 99, 132, 0.6)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
