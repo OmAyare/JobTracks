@@ -27,23 +27,6 @@ namespace JobTracks.Areas.TeamLeader.Controllers
 
             int tlId = (int)Session["UserId"];
 
-            //// Job count per month (raw SQL-safe)
-            //var jobData = db.Job_Master
-            //    .Where(j => j.TeamLeader_Id == tlId)
-            //    .GroupBy(j => j.CreatedDate.Month)
-            //    .Select(g => new {
-            //        MonthNum = g.Key, // this is int like 1, 2, 3
-            //        Count = g.Count()
-            //    })
-            //    .ToList() // switch to LINQ-to-Objects (safe)
-            //    .Select(x => new {
-            //        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(x.MonthNum),
-            //        Count = x.Count
-            //    })
-            //    .ToList();
-
-            //ViewBag.Months = jobData.Select(x => x.Month).ToList();
-            //ViewBag.JobCounts = jobData.Select(x => x.Count).ToList();
             var jobList = db.Job_Master.ToList();
 
             // If you don't have CreatedDate in DB, simulate it
