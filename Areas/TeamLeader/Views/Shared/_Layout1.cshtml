@@ -26,7 +26,10 @@
 
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li>@Html.ActionLink("Company", "Company")</li>
+                            <li>@Html.ActionLink("Company", "Company", "TeamLeader", new { @class = "btn btn-sm btn-outline-primary" })</li>
+                            <li>
+                                @Html.ActionLink("View Recruiter Activity", "RecruiterWorkDetail", "TeamLeader", new { @class = "btn btn-sm btn-outline-primary" })
+                            </li>
                         </ul>
                     </div>
 

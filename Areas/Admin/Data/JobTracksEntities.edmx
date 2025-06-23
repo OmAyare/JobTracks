@@ -31,10 +31,10 @@
             <PropertyRef Name="Job_Id" />
           </Key>
           <Property Name="Job_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Recuriter_ID" Type="int" />
-          <Property Name="Applicant_ID" Type="int" />
-          <Property Name="status" Type="varchar" MaxLength="50" />
-          <Property Name="AssignedDate" Type="datetime" />
+          <Property Name="Recuriter_ID" Type="int" Nullable="false" />
+          <Property Name="Applicant_ID" Type="int" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="JobRef_Id" Type="int" />
         </EntityType>
         <EntityType Name="Job_Master">
           <Key>
@@ -68,30 +68,6 @@
           <Property Name="Password" Type="varchar" MaxLength="55" Nullable="false" />
           <Property Name="Role_id" Type="int" />
         </EntityType>
-        <Association Name="FK__Job_Appli__Appli__59063A47">
-          <End Role="Applicant_Master" Type="Self.Applicant_Master" Multiplicity="0..1" />
-          <End Role="Job_Applicant_Master" Type="Self.Job_Applicant_Master" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Applicant_Master">
-              <PropertyRef Name="AppLicant_id" />
-            </Principal>
-            <Dependent Role="Job_Applicant_Master">
-              <PropertyRef Name="Applicant_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Job_Appli__Recur__5812160E">
-          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
-          <End Role="Job_Applicant_Master" Type="Self.Job_Applicant_Master" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="User_id" />
-            </Principal>
-            <Dependent Role="Job_Applicant_Master">
-              <PropertyRef Name="Recuriter_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Job_Maste__Compa__5165187F">
           <End Role="Company_Master" Type="Self.Company_Master" Multiplicity="0..1" />
           <End Role="Job_Master" Type="Self.Job_Master" Multiplicity="*" />
@@ -140,6 +116,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_JobApplicant_Applicant">
+          <End Role="Applicant_Master" Type="Self.Applicant_Master" Multiplicity="1" />
+          <End Role="Job_Applicant_Master" Type="Self.Job_Applicant_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Applicant_Master">
+              <PropertyRef Name="AppLicant_id" />
+            </Principal>
+            <Dependent Role="Job_Applicant_Master">
+              <PropertyRef Name="Applicant_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_JobApplicant_JobRef">
+          <End Role="Job_Master" Type="Self.Job_Master" Multiplicity="0..1" />
+          <End Role="Job_Applicant_Master" Type="Self.Job_Applicant_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Job_Master">
+              <PropertyRef Name="Job_id" />
+            </Principal>
+            <Dependent Role="Job_Applicant_Master">
+              <PropertyRef Name="JobRef_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_JobApplicant_Recruiter">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Job_Applicant_Master" Type="Self.Job_Applicant_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="User_id" />
+            </Principal>
+            <Dependent Role="Job_Applicant_Master">
+              <PropertyRef Name="Recuriter_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="ModelsStoreContainer">
           <EntitySet Name="Applicant_Master" EntityType="Self.Applicant_Master" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Company_Master" EntityType="Self.Company_Master" Schema="dbo" store:Type="Tables" />
@@ -147,14 +159,6 @@
           <EntitySet Name="Job_Master" EntityType="Self.Job_Master" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Job_Appli__Appli__59063A47" Association="Self.FK__Job_Appli__Appli__59063A47">
-            <End Role="Applicant_Master" EntitySet="Applicant_Master" />
-            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Job_Appli__Recur__5812160E" Association="Self.FK__Job_Appli__Recur__5812160E">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
-          </AssociationSet>
           <AssociationSet Name="FK__Job_Maste__Compa__5165187F" Association="Self.FK__Job_Maste__Compa__5165187F">
             <End Role="Company_Master" EntitySet="Company_Master" />
             <End Role="Job_Master" EntitySet="Job_Master" />
@@ -170,6 +174,18 @@
           <AssociationSet Name="FK__Users__Role_id__4CA06362" Association="Self.FK__Users__Role_id__4CA06362">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JobApplicant_Applicant" Association="Self.FK_JobApplicant_Applicant">
+            <End Role="Applicant_Master" EntitySet="Applicant_Master" />
+            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JobApplicant_JobRef" Association="Self.FK_JobApplicant_JobRef">
+            <End Role="Job_Master" EntitySet="Job_Master" />
+            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JobApplicant_Recruiter" Association="Self.FK_JobApplicant_Recruiter">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -188,47 +204,8 @@
           <Property Name="YearOfExperience" Type="Int32" />
           <Property Name="Resume" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Job_Applicant_Master" Relationship="Self.FK__Job_Appli__Appli__46E78A0C" FromRole="Applicant_Master" ToRole="Job_Applicant_Master" />
-        </EntityType>
-        <EntityType Name="Company_Master">
-          <Key>
-            <PropertyRef Name="Company_id" />
-          </Key>
-          <Property Name="Company_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Company_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Job_Master" Relationship="Self.FK__Job_Maste__Compa__3F466844" FromRole="Company_Master" ToRole="Job_Master" />
-        </EntityType>
-        <EntityType Name="Job_Applicant_Master">
-          <Key>
-            <PropertyRef Name="Job_Id" />
-          </Key>
-          <Property Name="Job_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Recuriter_ID" Type="Int32" />
-          <Property Name="Applicant_ID" Type="Int32" />
-          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Applicant_Master" Relationship="Self.FK__Job_Appli__Appli__46E78A0C" FromRole="Job_Applicant_Master" ToRole="Applicant_Master" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Job_Appli__Recur__45F365D3" FromRole="Job_Applicant_Master" ToRole="Users" />
-          <Property Name="AssignedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Job_Master">
-          <Key>
-            <PropertyRef Name="Job_id" />
-          </Key>
-          <Property Name="Job_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Tech_Stack" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Company_Id" Type="Int32" />
-          <Property Name="TeamLeader_Id" Type="Int32" />
-          <Property Name="Recruiter_Id" Type="Int32" />
-          <NavigationProperty Name="Company_Master" Relationship="Self.FK__Job_Maste__Compa__3F466844" FromRole="Job_Master" ToRole="Company_Master" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Job_Maste__Recru__412EB0B6" FromRole="Job_Master" ToRole="Users" />
-          <NavigationProperty Name="User1" Relationship="Self.FK__Job_Maste__TeamL__403A8C7D" FromRole="Job_Master" ToRole="Users" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TentativeDate" Type="DateTime" Precision="3" />
-        </EntityType>
+          <NavigationProperty Name="Job_Applicant_Master" Relationship="Models.FK_JobApplicant_Applicant" FromRole="Applicant_Master" ToRole="Job_Applicant_Master" />
+          </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="Id" />
@@ -246,71 +223,11 @@
           <Property Name="Email" Type="String" MaxLength="75" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Password" Type="String" MaxLength="55" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Role_id" Type="Int32" />
-          <NavigationProperty Name="Job_Applicant_Master" Relationship="Self.FK__Job_Appli__Recur__45F365D3" FromRole="Users" ToRole="Job_Applicant_Master" />
-          <NavigationProperty Name="Job_Master" Relationship="Self.FK__Job_Maste__Recru__412EB0B6" FromRole="Users" ToRole="Job_Master" />
-          <NavigationProperty Name="Job_Master1" Relationship="Self.FK__Job_Maste__TeamL__403A8C7D" FromRole="Users" ToRole="Job_Master" />
           <NavigationProperty Name="Role" Relationship="Self.FK__Users__Role_id__3A81B327" FromRole="Users" ToRole="Roles" />
+          <NavigationProperty Name="Job_Applicant_Master" Relationship="Models.FK_JobApplicant_Recruiter" FromRole="User" ToRole="Job_Applicant_Master" />
+          <NavigationProperty Name="Job_Master" Relationship="Models.FK__Job_Maste__Recru__534D60F1" FromRole="User" ToRole="Job_Master" />
+          <NavigationProperty Name="Job_Master1" Relationship="Models.FK__Job_Maste__TeamL__52593CB8" FromRole="User" ToRole="Job_Master" />
         </EntityType>
-        <Association Name="FK__Job_Appli__Appli__46E78A0C">
-          <End Role="Applicant_Master" Type="Self.Applicant_Master" Multiplicity="0..1" />
-          <End Role="Job_Applicant_Master" Type="Self.Job_Applicant_Master" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Applicant_Master">
-              <PropertyRef Name="AppLicant_id" />
-            </Principal>
-            <Dependent Role="Job_Applicant_Master">
-              <PropertyRef Name="Applicant_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Job_Maste__Compa__3F466844">
-          <End Role="Company_Master" Type="Self.Company_Master" Multiplicity="0..1" />
-          <End Role="Job_Master" Type="Self.Job_Master" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Company_Master">
-              <PropertyRef Name="Company_id" />
-            </Principal>
-            <Dependent Role="Job_Master">
-              <PropertyRef Name="Company_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Job_Appli__Recur__45F365D3">
-          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Job_Applicant_Master" Type="Self.Job_Applicant_Master" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="User_id" />
-            </Principal>
-            <Dependent Role="Job_Applicant_Master">
-              <PropertyRef Name="Recuriter_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Job_Maste__Recru__412EB0B6">
-          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Job_Master" Type="Self.Job_Master" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="User_id" />
-            </Principal>
-            <Dependent Role="Job_Master">
-              <PropertyRef Name="Recruiter_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Job_Maste__TeamL__403A8C7D">
-          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Job_Master" Type="Self.Job_Master" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="User_id" />
-            </Principal>
-            <Dependent Role="Job_Master">
-              <PropertyRef Name="TeamLeader_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Users__Role_id__3A81B327">
           <End Role="Roles" Type="Self.Role" Multiplicity="0..1" />
           <End Role="Users" Type="Self.User" Multiplicity="*" />
@@ -325,37 +242,154 @@
         </Association>
         <EntityContainer Name="JobTracksEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Applicant_Master" EntityType="Self.Applicant_Master" />
-          <EntitySet Name="Company_Master" EntityType="Self.Company_Master" />
-          <EntitySet Name="Job_Applicant_Master" EntityType="Self.Job_Applicant_Master" />
-          <EntitySet Name="Job_Master" EntityType="Self.Job_Master" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="Users" EntityType="Self.User" />
-          <AssociationSet Name="FK__Job_Appli__Appli__46E78A0C" Association="Self.FK__Job_Appli__Appli__46E78A0C">
-            <End Role="Applicant_Master" EntitySet="Applicant_Master" />
-            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Job_Maste__Compa__3F466844" Association="Self.FK__Job_Maste__Compa__3F466844">
-            <End Role="Company_Master" EntitySet="Company_Master" />
-            <End Role="Job_Master" EntitySet="Job_Master" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Job_Appli__Recur__45F365D3" Association="Self.FK__Job_Appli__Recur__45F365D3">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Job_Maste__Recru__412EB0B6" Association="Self.FK__Job_Maste__Recru__412EB0B6">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Job_Master" EntitySet="Job_Master" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Job_Maste__TeamL__403A8C7D" Association="Self.FK__Job_Maste__TeamL__403A8C7D">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Job_Master" EntitySet="Job_Master" />
-          </AssociationSet>
           <AssociationSet Name="FK__Users__Role_id__3A81B327" Association="Self.FK__Users__Role_id__3A81B327">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
-        </EntityContainer>
-      </Schema>
+          <EntitySet Name="Company_Master" EntityType="Models.Company_Master" />
+          <EntitySet Name="Job_Applicant_Master" EntityType="Models.Job_Applicant_Master" />
+          <EntitySet Name="Job_Master" EntityType="Models.Job_Master" />
+          <AssociationSet Name="FK_JobApplicant_Applicant" Association="Models.FK_JobApplicant_Applicant">
+            <End Role="Applicant_Master" EntitySet="Applicant_Master" />
+            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Job_Maste__Compa__5165187F" Association="Models.FK__Job_Maste__Compa__5165187F">
+            <End Role="Company_Master" EntitySet="Company_Master" />
+            <End Role="Job_Master" EntitySet="Job_Master" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JobApplicant_Recruiter" Association="Models.FK_JobApplicant_Recruiter">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Job_Maste__Recru__534D60F1" Association="Models.FK__Job_Maste__Recru__534D60F1">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Job_Master" EntitySet="Job_Master" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Job_Maste__TeamL__52593CB8" Association="Models.FK__Job_Maste__TeamL__52593CB8">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Job_Master" EntitySet="Job_Master" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JobApplicant_JobRef" Association="Models.FK_JobApplicant_JobRef">
+            <End Role="Job_Master" EntitySet="Job_Master" />
+            <End Role="Job_Applicant_Master" EntitySet="Job_Applicant_Master" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Company_Master">
+          <Key>
+            <PropertyRef Name="Company_id" />
+          </Key>
+          <Property Name="Company_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Company_Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Job_Master" Relationship="Models.FK__Job_Maste__Compa__5165187F" FromRole="Company_Master" ToRole="Job_Master" />
+        </EntityType>
+        <EntityType Name="Job_Applicant_Master">
+          <Key>
+            <PropertyRef Name="Job_Id" />
+          </Key>
+          <Property Name="Job_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Recuriter_ID" Type="Int32" Nullable="false" />
+          <Property Name="Applicant_ID" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Applicant_Master" Relationship="Models.FK_JobApplicant_Applicant" FromRole="Job_Applicant_Master" ToRole="Applicant_Master" />
+          <NavigationProperty Name="User" Relationship="Models.FK_JobApplicant_Recruiter" FromRole="Job_Applicant_Master" ToRole="User" />
+          <Property Name="JobRef_Id" Type="Int32" />
+          <NavigationProperty Name="Job_Master" Relationship="Models.FK_JobApplicant_JobRef" FromRole="Job_Applicant_Master" ToRole="Job_Master" />
+        </EntityType>
+        <EntityType Name="Job_Master">
+          <Key>
+            <PropertyRef Name="Job_id" />
+          </Key>
+          <Property Name="Job_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Tech_Stack" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Company_Id" Type="Int32" />
+          <Property Name="TeamLeader_Id" Type="Int32" />
+          <Property Name="Recruiter_Id" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TentativeDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Company_Master" Relationship="Models.FK__Job_Maste__Compa__5165187F" FromRole="Job_Master" ToRole="Company_Master" />
+          <NavigationProperty Name="User" Relationship="Models.FK__Job_Maste__Recru__534D60F1" FromRole="Job_Master" ToRole="User" />
+          <NavigationProperty Name="User1" Relationship="Models.FK__Job_Maste__TeamL__52593CB8" FromRole="Job_Master" ToRole="User" />
+          <NavigationProperty Name="Job_Applicant_Master" Relationship="Models.FK_JobApplicant_JobRef" FromRole="Job_Master" ToRole="Job_Applicant_Master" />
+        </EntityType>
+        <Association Name="FK_JobApplicant_Applicant">
+          <End Type="Models.Applicant_Master" Role="Applicant_Master" Multiplicity="1" />
+          <End Type="Models.Job_Applicant_Master" Role="Job_Applicant_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Applicant_Master">
+              <PropertyRef Name="AppLicant_id" />
+            </Principal>
+            <Dependent Role="Job_Applicant_Master">
+              <PropertyRef Name="Applicant_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Job_Maste__Compa__5165187F">
+          <End Type="Models.Company_Master" Role="Company_Master" Multiplicity="0..1" />
+          <End Type="Models.Job_Master" Role="Job_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company_Master">
+              <PropertyRef Name="Company_id" />
+            </Principal>
+            <Dependent Role="Job_Master">
+              <PropertyRef Name="Company_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_JobApplicant_Recruiter">
+          <End Type="Models.User" Role="User" Multiplicity="1" />
+          <End Type="Models.Job_Applicant_Master" Role="Job_Applicant_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="User_id" />
+            </Principal>
+            <Dependent Role="Job_Applicant_Master">
+              <PropertyRef Name="Recuriter_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Job_Maste__Recru__534D60F1">
+          <End Type="Models.User" Role="User" Multiplicity="0..1" />
+          <End Type="Models.Job_Master" Role="Job_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="User_id" />
+            </Principal>
+            <Dependent Role="Job_Master">
+              <PropertyRef Name="Recruiter_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Job_Maste__TeamL__52593CB8">
+          <End Type="Models.User" Role="User" Multiplicity="0..1" />
+          <End Type="Models.Job_Master" Role="Job_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="User_id" />
+            </Principal>
+            <Dependent Role="Job_Master">
+              <PropertyRef Name="TeamLeader_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_JobApplicant_JobRef">
+          <End Type="Models.Job_Master" Role="Job_Master" Multiplicity="0..1" />
+          <End Type="Models.Job_Applicant_Master" Role="Job_Applicant_Master" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Job_Master">
+              <PropertyRef Name="Job_id" />
+            </Principal>
+            <Dependent Role="Job_Applicant_Master">
+              <PropertyRef Name="JobRef_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -375,42 +409,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Company_Master">
-            <EntityTypeMapping TypeName="Models.Company_Master">
-              <MappingFragment StoreEntitySet="Company_Master">
-                <ScalarProperty Name="Company_id" ColumnName="Company_id" />
-                <ScalarProperty Name="Company_Name" ColumnName="Company_Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Job_Applicant_Master">
-            <EntityTypeMapping TypeName="Models.Job_Applicant_Master">
-              <MappingFragment StoreEntitySet="Job_Applicant_Master">
-                <ScalarProperty Name="AssignedDate" ColumnName="AssignedDate" />
-                <ScalarProperty Name="Job_Id" ColumnName="Job_Id" />
-                <ScalarProperty Name="Recuriter_ID" ColumnName="Recuriter_ID" />
-                <ScalarProperty Name="Applicant_ID" ColumnName="Applicant_ID" />
-                <ScalarProperty Name="status" ColumnName="status" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Job_Master">
-            <EntityTypeMapping TypeName="Models.Job_Master">
-              <MappingFragment StoreEntitySet="Job_Master">
-                <ScalarProperty Name="TentativeDate" ColumnName="TentativeDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Job_id" ColumnName="Job_id" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Tech_Stack" ColumnName="Tech_Stack" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="Company_Id" ColumnName="Company_Id" />
-                <ScalarProperty Name="TeamLeader_Id" ColumnName="TeamLeader_Id" />
-                <ScalarProperty Name="Recruiter_Id" ColumnName="Recruiter_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Roles">
             <EntityTypeMapping TypeName="Models.Role">
               <MappingFragment StoreEntitySet="Roles">
@@ -427,6 +425,42 @@
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Role_id" ColumnName="Role_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Company_Master">
+            <EntityTypeMapping TypeName="Models.Company_Master">
+              <MappingFragment StoreEntitySet="Company_Master">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Company_Name" ColumnName="Company_Name" />
+                <ScalarProperty Name="Company_id" ColumnName="Company_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Job_Applicant_Master">
+            <EntityTypeMapping TypeName="Models.Job_Applicant_Master">
+              <MappingFragment StoreEntitySet="Job_Applicant_Master">
+                <ScalarProperty Name="JobRef_Id" ColumnName="JobRef_Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Applicant_ID" ColumnName="Applicant_ID" />
+                <ScalarProperty Name="Recuriter_ID" ColumnName="Recuriter_ID" />
+                <ScalarProperty Name="Job_Id" ColumnName="Job_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Job_Master">
+            <EntityTypeMapping TypeName="Models.Job_Master">
+              <MappingFragment StoreEntitySet="Job_Master">
+                <ScalarProperty Name="TentativeDate" ColumnName="TentativeDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Recruiter_Id" ColumnName="Recruiter_Id" />
+                <ScalarProperty Name="TeamLeader_Id" ColumnName="TeamLeader_Id" />
+                <ScalarProperty Name="Company_Id" ColumnName="Company_Id" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="Tech_Stack" ColumnName="Tech_Stack" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Job_id" ColumnName="Job_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

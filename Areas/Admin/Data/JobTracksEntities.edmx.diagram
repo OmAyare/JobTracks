@@ -5,19 +5,20 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="79431fc431594a4285dddfa4a1435c1f" Name="Diagram1">
-        <EntityTypeShape EntityType="Models.Applicant_Master" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Models.Company_Master" Width="1.5" PointX="6" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="Models.Job_Applicant_Master" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="Models.Job_Master" Width="1.5" PointX="8.25" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="Models.Role" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="Models.User" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
-        <AssociationConnector Association="Models.FK__Job_Appli__Appli__46E78A0C" ManuallyRouted="false" />
-        <AssociationConnector Association="Models.FK__Job_Maste__Compa__3F466844" ManuallyRouted="false" />
-        <AssociationConnector Association="Models.FK__Job_Appli__Recur__45F365D3" ManuallyRouted="false" />
-        <AssociationConnector Association="Models.FK__Job_Maste__Recru__412EB0B6" ManuallyRouted="false" />
-        <AssociationConnector Association="Models.FK__Job_Maste__TeamL__403A8C7D" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Models.Applicant_Master" Width="1.5" PointX="2.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.Role" Width="1.5" PointX="1.125" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.User" Width="1.5" PointX="6.5" PointY="0.875" IsExpanded="true" />
         <AssociationConnector Association="Models.FK__Users__Role_id__3A81B327" ManuallyRouted="false" />
-      </Diagram>
+        <EntityTypeShape EntityType="Models.Company_Master" Width="1.5" PointX="12.375" PointY="4.125" />
+        <EntityTypeShape EntityType="Models.Job_Applicant_Master" Width="1.5" PointX="5.375" PointY="4.375" />
+        <EntityTypeShape EntityType="Models.Job_Master" Width="1.5" PointX="8.75" PointY="4.25" />
+        <AssociationConnector Association="Models.FK_JobApplicant_Applicant" />
+        <AssociationConnector Association="Models.FK__Job_Maste__Compa__5165187F" />
+        <AssociationConnector Association="Models.FK_JobApplicant_Recruiter" />
+        <AssociationConnector Association="Models.FK__Job_Maste__Recru__534D60F1" />
+        <AssociationConnector Association="Models.FK__Job_Maste__TeamL__52593CB8" />
+        <AssociationConnector Association="Models.FK_JobApplicant_JobRef" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

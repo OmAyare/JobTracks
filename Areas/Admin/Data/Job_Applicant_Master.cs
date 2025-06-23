@@ -15,12 +15,13 @@ namespace JobTracks.Areas.Admin.Data
     public partial class Job_Applicant_Master
     {
         public int Job_Id { get; set; }
-        public Nullable<int> Recuriter_ID { get; set; }
-        public Nullable<int> Applicant_ID { get; set; }
-        public string status { get; set; }
-        public Nullable<System.DateTime> AssignedDate { get; set; }
+        public int Recuriter_ID { get; set; }
+        public int Applicant_ID { get; set; }
+        public string Status { get; set; }
+        public Nullable<int> JobRef_Id { get; set; }
     
         public virtual Applicant_Master Applicant_Master { get; set; }
         public virtual User User { get; set; }
+        public virtual Job_Master Job_Master { get; set; }
     }
 }

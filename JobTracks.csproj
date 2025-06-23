@@ -124,10 +124,16 @@
     <Compile Include="Areas\Admin\Data\Applicant_Master.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Areas\Admin\Data\Job_Mastesr.cs" />
     <Compile Include="Areas\Admin\Data\Company_Master.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Admin\Data\Job_Applicant_Master.cs">
+      <DependentUpon>JobTracksEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Admin\Data\Job_Master.cs">
+      <DependentUpon>JobTracksEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Admin\Data\Job_Mastesr.cs" />
     <Compile Include="Areas\Admin\Data\JobTracksEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -143,12 +149,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>JobTracksEntities.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Areas\Admin\Data\Job_Applicant_Master.cs">
-      <DependentUpon>JobTracksEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Areas\Admin\Data\Job_Master.cs">
-      <DependentUpon>JobTracksEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="Areas\Admin\Data\Role.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
@@ -157,6 +157,7 @@
     </Compile>
     <Compile Include="Areas\Admin\Data\Users.cs" />
     <Compile Include="Areas\TeamLeader\Controllers\TeamLeaderController.cs" />
+    <Compile Include="Areas\TeamLeader\Data\RecruiterSummaryViewModel.cs" />
     <Compile Include="Areas\TeamLeader\TeamLeaderAreaRegistration.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -232,6 +233,7 @@
     <Content Include="Areas\TeamLeader\Views\TeamLeader\AssignWork.cshtml" />
     <Content Include="Areas\TeamLeader\Views\TeamLeader\Company.cshtml" />
     <Content Include="Areas\TeamLeader\Views\TeamLeader\AssignWorkEdit.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\RecruiterWorkDetail.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -260,7 +262,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\TeamLeader\Data\" />
     <Folder Include="Models\" />
     <Folder Include="Views\TeamLeader\" />
   </ItemGroup>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<JobTracks.Areas.TeamLeader.Data.RecruiterSummaryViewModel>
+
+@{
+    ViewBag.Title = "Recruiter Activity Report";
+}
+
+<h2>Recruiter Activity Report</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Recruiter</th>
+            <th>Applicant</th>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Assigned Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RecruiterName</td>
+                <td>@item.ApplicantName</td>
+                <td>@item.JobTitle</td>
+                <td>@item.CompanyName</td>
+                <td>@item.Status</td>
+                <td>@(item.AssignedDate != null ? string.Format("{0:dd-MMM-yyyy}", item.AssignedDate) : "-")</td>
+            </tr>
+        }
+    </tbody>
+</table>

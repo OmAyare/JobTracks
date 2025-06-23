@@ -14,6 +14,12 @@ namespace JobTracks.Areas.Admin.Data
     
     public partial class Job_Master
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Job_Master()
+        {
+            this.Job_Applicant_Master = new HashSet<Job_Applicant_Master>();
+        }
+    
         public int Job_id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -28,5 +34,7 @@ namespace JobTracks.Areas.Admin.Data
         public virtual Company_Master Company_Master { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Job_Applicant_Master> Job_Applicant_Master { get; set; }
     }
 }

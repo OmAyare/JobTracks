@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using JobTracks.Areas.Admin.Data;
+using JobTracks.Areas.TeamLeader.Data;
 
 namespace JobTracks.Areas.TeamLeader.Controllers
 {
@@ -176,6 +177,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
             Companyfromdb.Company_Id = tblAssign.Company_Id;
             Companyfromdb.TeamLeader_Id = tblAssign.TeamLeader_Id;
             Companyfromdb.Recruiter_Id = tblAssign.Recruiter_Id;
+            Companyfromdb.TentativeDate = tblAssign.TentativeDate;
             if (ModelState.IsValid)
             {
                 db.Entry(Companyfromdb).State = EntityState.Modified;
@@ -183,6 +185,30 @@ namespace JobTracks.Areas.TeamLeader.Controllers
                 return RedirectToAction("Company", new { Job_id = tblAssign.Job_id.ToString() });
             }
             return View(tblAssign);
+        }
+
+        public ActionResult RecruiterWorkDetail(int? recruiterId, int? companyId)
+        {
+            int teamLeaderId = (int)Session["UserId"];
+
+            var report = db.Job_Applicant_Master
+                 .Where(j => j.JobRef_Id != null &&
+                             j.Job_Master.TeamLeader_Id == teamLeaderId)
+                 .Select(j => new RecruiterSummaryViewModel
+                 {
+                     RecruiterName = j.User.Username,
+                     ApplicantName = j.Applicant_Master.FirstName + " " + j.Applicant_Master.LastName,
+                     JobTitle = j.Job_Master.Title,
+                     CompanyName = j.Job_Master.Company_Master.Company_Name,
+                     Status = j.Status,
+                     AssignedDate = j.Job_Master.TentativeDate
+                 })
+                 .ToList();
+
+                        return View(report);
+
+
+
         }
 
         #endregion

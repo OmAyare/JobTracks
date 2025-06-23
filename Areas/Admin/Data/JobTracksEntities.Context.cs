@@ -26,10 +26,10 @@ namespace JobTracks.Areas.Admin.Data
         }
     
         public virtual DbSet<Applicant_Master> Applicant_Master { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Company_Master> Company_Master { get; set; }
         public virtual DbSet<Job_Applicant_Master> Job_Applicant_Master { get; set; }
         public virtual DbSet<Job_Master> Job_Master { get; set; }
-        public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<User> Users { get; set; }
     }
 }
