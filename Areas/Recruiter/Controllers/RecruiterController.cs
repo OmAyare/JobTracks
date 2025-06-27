@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -31,7 +32,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
 
             return View(jobs);
         }
-        public ActionResult ViewApplicants()
+        public ActionResult AssignApplicants()
         {
             int recruiterId = (int)Session["UserId"];
 
@@ -142,7 +143,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
             db.SaveChanges();
 
             TempData["Success"] = "Applicant status and job updated successfully!";
-            return RedirectToAction("ViewApplicants");
+            return RedirectToAction("AssignApplicants");
         }
 
         [HttpGet]
@@ -151,15 +152,72 @@ namespace JobTracks.Areas.Recruiter.Controllers
               return View();
         }
 
+        //[HttpPost]
+        //public ActionResult Add_Applicants([Bind(Include = "AppLicant_id,FirstName,LastName,Last_Qualification,PassOutYear,YearOfExperience,Resume,Status")] 
+        //Applicant_Master applicant ,HttpPostedFileBase ResumeFile) 
+        //{
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (ResumeFile != null && ResumeFile.ContentLength > 0)
+        //        {
+        //            var fileName = Path.GetFileName(ResumeFile.FileName);
+        //            var savePath = Path.Combine(Server.MapPath("~/Resumes"), fileName);
+        //            ResumeFile.SaveAs(savePath);
+
+        //            applicant.Resume = fileName; // store only the file name in DB
+        //        }
+
+
+        //        db.Applicant_Master.Add(applicant);
+        //        db.SaveChanges();
+        //        TempData["Success"] = "Applicant added successfully!";
+        //        return RedirectToAction("View_Applcants");
+        //    }
+        //    return View(applicant);
+        //}
+
         [HttpPost]
-        public ActionResult Add_Applicants([Bind(Include = "AppLicant_id,FirstName,LastName,Last_Qualification,PassOutYear,YearOfExperience,Resume,Status")] Applicant_Master applicant) 
+        [ValidateAntiForgeryToken]
+        public ActionResult Add_Applicants(Applicant_Master applicant, HttpPostedFileBase ResumeFile)
         {
             if (ModelState.IsValid)
             {
+                // Save PDF
+                if (ResumeFile != null && ResumeFile.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileName(ResumeFile.FileName);
+                    string path = Path.Combine(Server.MapPath("~/Resumes"), fileName);
+                    ResumeFile.SaveAs(path);
+                    applicant.Resume = fileName;
+                }
+
+                // Save applicant first
                 db.Applicant_Master.Add(applicant);
                 db.SaveChanges();
-                return RedirectToAction("ViewApplicants");
+
+                // Get newly added applicant's ID
+                int applicantId = applicant.AppLicant_id;
+
+                // Get recruiter ID from session
+                int recruiterId = (int)Session["UserId"];
+
+                // Create Job_Applicant_Master entry (empty status, JobRefId null for now)
+                Job_Applicant_Master jobApplicant = new Job_Applicant_Master
+                {
+                    Applicant_ID = applicantId,
+                    Recuriter_ID = recruiterId,
+                    Status = null,
+                    JobRef_Id = null // will be selected in Assign view
+                };
+
+                db.Job_Applicant_Master.Add(jobApplicant);
+                db.SaveChanges();
+
+                TempData["Success"] = "Applicant added and assigned successfully!";
+                return RedirectToAction("View_Applcants"); // or your appropriate list view
             }
+
             return View(applicant);
         }
 

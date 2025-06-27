@@ -7,7 +7,7 @@
 <h2>View_Applcants</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Add_Applicants")
 </p>
 <table class="table">
     <tr>
@@ -53,15 +53,23 @@
             @Html.DisplayFor(modelItem => item.YearOfExperience)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Resume)
+            @if (!string.IsNullOrEmpty(item.Resume))
+            {
+                <a href="@Url.Content("~/Resumes/" + item.Resume)" target="_blank">View Resume</a>
+            }
+            else
+            {
+                <span class="text-muted">No Resume</span>
+            }
         </td>
+
         <td>
             @Html.DisplayFor(modelItem => item.Status)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.AppLicant_id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.AppLicant_id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.AppLicant_id })
+            @Html.ActionLink("Edit", "Edit", new { id = item.AppLicant_id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.AppLicant_id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.AppLicant_id })
         </td>
     </tr>
 }

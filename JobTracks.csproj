@@ -244,7 +244,7 @@
     <Content Include="Areas\Recruiter\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Recruiter\Views\Recruiter\Dashboard.cshtml" />
     <Content Include="Areas\Recruiter\Views\Shared\_Layout1.cshtml" />
-    <Content Include="Areas\Recruiter\Views\Recruiter\ViewApplicants.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Recruiter\AssignApplicants.cshtml" />
     <Content Include="Areas\Recruiter\Views\Recruiter\EditApplicantStatus.cshtml" />
     <Content Include="Areas\Recruiter\Views\Recruiter\Add_Applicants.cshtml" />
     <Content Include="Areas\Recruiter\Views\Recruiter\View_Applcants.cshtml" />
@@ -277,6 +277,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Resumes\" />
     <Folder Include="Views\TeamLeader\" />
   </ItemGroup>
   <ItemGroup>
