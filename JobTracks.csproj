@@ -156,6 +156,11 @@
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Areas\Admin\Data\Users.cs" />
+    <Compile Include="Areas\Recruiter\Controllers\RecruiterController.cs" />
+    <Compile Include="Areas\Recruiter\Data\AssignedJobViewModel.cs" />
+    <Compile Include="Areas\Recruiter\Data\EditApplicantStatusViewModel.cs" />
+    <Compile Include="Areas\Recruiter\Data\RecruiterApplicantListViewModel.cs" />
+    <Compile Include="Areas\Recruiter\RecruiterAreaRegistration.cs" />
     <Compile Include="Areas\TeamLeader\Controllers\TeamLeaderController.cs" />
     <Compile Include="Areas\TeamLeader\Data\RecruiterSummaryViewModel.cs" />
     <Compile Include="Areas\TeamLeader\TeamLeaderAreaRegistration.cs" />
@@ -234,6 +239,15 @@
     <Content Include="Areas\TeamLeader\Views\TeamLeader\Company.cshtml" />
     <Content Include="Areas\TeamLeader\Views\TeamLeader\AssignWorkEdit.cshtml" />
     <Content Include="Areas\TeamLeader\Views\TeamLeader\RecruiterWorkDetail.cshtml" />
+    <Content Include="Areas\Recruiter\Views\web.config" />
+    <Content Include="Areas\Recruiter\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Recruiter\Dashboard.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Shared\_Layout1.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Recruiter\ViewApplicants.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Recruiter\EditApplicantStatus.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Recruiter\Add_Applicants.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Recruiter\View_Applcants.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<JobTracks.Areas.Recruiter.Data.RecruiterApplicantListViewModel>
+@{
+    ViewBag.Title = "My Applicants";
+}
+
+<h2>My Applicants</h2>
+
+@Html.ActionLink("Create Applicants", "Add_Applicants", null, new { @class = "btn btn-sm btn-outline-primary" }) 
+<br />
+<br />
+
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Applicant Name</th>
+            <th>Qualification</th>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Tentative Date</th>
+            <th>Recruiter Status</th>
+            <th>TL Job Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ApplicantFullName</td>
+                <td>@item.LastQualification</td>
+                <td>@item.JobTitle</td>
+                <td>@item.CompanyName</td>
+                <td>@(item.TentativeDate?.ToString("dd-MMM-yyyy") ?? "-")</td>
+                <td>@(string.IsNullOrEmpty(item.ApplicantStatus) ? "Pending" : item.ApplicantStatus)</td>
+                <td>@item.MappedJobStatus</td>
+                <td>
+                    @Html.ActionLink("Edit", "EditApplicantStatus", new { id = item.JobApplicantId }, new { @class = "btn btn-sm btn-outline-primary" })
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
