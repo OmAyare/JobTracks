@@ -1,0 +1,80 @@
+﻿@model JobTracks.Areas.Admin.Data.Applicant_Master
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Applicant_Master</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Last_Qualification)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Last_Qualification)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PassOutYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PassOutYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YearOfExperience)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YearOfExperience)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Resume)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Resume)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "View_Applcants")
+        </div>
+    }
+</div>

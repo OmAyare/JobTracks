@@ -1,12 +1,15 @@
-﻿using JobTracks.Areas.Admin.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.Globalization;
+using System.Web.UI;
+using JobTracks.Areas.Admin.Data;
+using PagedList;
+using PagedList.Mvc;
 
 namespace JobTracks.Areas.Admin.Controllers
 {
@@ -43,9 +46,17 @@ namespace JobTracks.Areas.Admin.Controllers
 
         /************************************** Users ********************************************/
         #region Users
-        public ActionResult User()
+        public ActionResult User(int? page, string searchBy, string search)
         {
-            var users = db.Users.ToList();
+            var users = db.Users.AsQueryable().ToList().ToPagedList(page ?? 1, 5);
+            if (searchBy == "Username")
+            {
+                return View(db.Users.Where(x => x.Username.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else
+            {
+                return View(db.Users.Where(x => x.Role.Name.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
             return View(users);
         }
 
@@ -164,9 +175,33 @@ namespace JobTracks.Areas.Admin.Controllers
         /************************************* Company *******************************************/
         #region Company
         [HttpGet]
-        public ActionResult Company()
+        public ActionResult Company(int? page, string searchBy, string search)
         {
-            var JobList = db.Job_Master.ToList();
+            if (searchBy == "TeamLeader_Id")
+            {
+                return View(db.Job_Master.Where(x => x.User1.Username.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "Recruiter_Id")
+            {
+                return View(db.Job_Master.Where(x => x.User.Username.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "Tech_Stack")
+            {
+                return View(db.Job_Master.Where(x => x.Tech_Stack.Contains(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "Title")
+            {
+                return View(db.Job_Master.Where(x => x.Title.StartsWith(search)|| search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "status")
+            {
+                return View(db.Job_Master.Where(x => x.status.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else
+            {
+                return View(db.Job_Master.Where(x => x.Company_Master.Company_Name.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            var JobList = db.Job_Master.AsQueryable().ToList().ToPagedList(page ?? 1, 7);
             return View(JobList);
         }
 
@@ -192,8 +227,8 @@ namespace JobTracks.Areas.Admin.Controllers
         public ActionResult AssignWork()
         {
             ViewBag.CompanyList = new SelectList(db.Company_Master, "Company_id", "Company_Name");
-            ViewBag.TLList = new SelectList(db.Users.Where(x => x.User_id == 2), "User_id", "Username");
-            ViewBag.RecruiterList = new SelectList(db.Users.Where(x => x.User_id == 3), "User_id", "Username");
+            ViewBag.TLList = new SelectList(db.Users.Where(x => x.Role_id == 2), "User_id", "Username");
+            ViewBag.RecruiterList = new SelectList(db.Users.Where(x => x.Role_id == 3), "User_id", "Username");
             return View();
         }
 
@@ -256,8 +291,8 @@ namespace JobTracks.Areas.Admin.Controllers
                 return HttpNotFound();
             }
             ViewBag.CompanyList = new SelectList(db.Company_Master, "Company_id", "Company_Name");
-            ViewBag.TLList = new SelectList(db.Users.Where(x => x.User_id == 2), "User_id", "Username");
-            ViewBag.RecruiterList = new SelectList(db.Users.Where(x => x.User_id == 3), "User_id", "Username");
+            ViewBag.TLList = new SelectList(db.Users.Where(x => x.Role_id == 2), "User_id", "Username");
+            ViewBag.RecruiterList = new SelectList(db.Users.Where(x => x.Role_id == 3), "User_id", "Username");
             return View(tblAssign);
         }
 

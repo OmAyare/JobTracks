@@ -6,8 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using JobTracks.Areas.Admin.Data;
 using JobTracks.Areas.TeamLeader.Data;
+using PagedList;
+using PagedList.Mvc;
 
 namespace JobTracks.Areas.TeamLeader.Controllers
 {
@@ -65,9 +68,33 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         #region Company
         [HttpGet]
         [Route("TeamLeaderr/Compnay")]
-        public ActionResult Company()
+        public ActionResult Company(int? page, string searchBy, string search)
         {
-            var JobList = db.Job_Master.ToList();
+            if (searchBy == "TeamLeader_Id")
+            {
+                return View(db.Job_Master.Where(x => x.User1.Username.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "Recruiter_Id")
+            {
+                return View(db.Job_Master.Where(x => x.User.Username.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "Tech_Stack")
+            {
+                return View(db.Job_Master.Where(x => x.Tech_Stack.Contains(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "Title")
+            {
+                return View(db.Job_Master.Where(x => x.Title.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "status")
+            {
+                return View(db.Job_Master.Where(x => x.status.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else
+            {
+                return View(db.Job_Master.Where(x => x.Company_Master.Company_Name.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            var JobList = db.Job_Master.AsQueryable().ToList().ToPagedList(page ?? 1, 7);
             return View(JobList);
         }
 
@@ -187,29 +214,85 @@ namespace JobTracks.Areas.TeamLeader.Controllers
             return View(tblAssign);
         }
 
-        public ActionResult RecruiterWorkDetail(int? recruiterId, int? companyId)
+        public ActionResult RecruiterWorkDetail(int? recruiterId, int? companyId, int? page, string searchBy, string search)
         {
             int teamLeaderId = (int)Session["UserId"];
 
-            var report = db.Job_Applicant_Master
-                 .Where(j => j.JobRef_Id != null &&
-                             j.Job_Master.TeamLeader_Id == teamLeaderId)
-                 .Select(j => new RecruiterSummaryViewModel
-                 {
-                     RecruiterName = j.User.Username,
-                     ApplicantName = j.Applicant_Master.FirstName + " " + j.Applicant_Master.LastName,
-                     JobTitle = j.Job_Master.Title,
-                     CompanyName = j.Job_Master.Company_Master.Company_Name,
-                     Status = j.Status,
-                     AssignedDate = j.Job_Master.TentativeDate
-                 })
-                 .ToList();
+            var query = db.Job_Applicant_Master
+                .Where(j => j.JobRef_Id != null &&
+                            j.Job_Master.TeamLeader_Id == teamLeaderId);
 
-                        return View(report);
+            // Apply filter based on searchBy
+            if (!string.IsNullOrEmpty(search))
+            {
+                switch (searchBy)
+                {
+                    case "Job Title":
+                        query = query.Where(j => j.Job_Master.Title.Contains(search));
+                        break;
+                    case "Company":
+                        query = query.Where(j => j.Job_Master.Company_Master.Company_Name.Contains(search));
+                        break;
+                    case "Status":
+                        query = query.Where(j => j.Status.Contains(search));
+                        break;
+                }
+            }
 
+            var report = query.Select(j => new RecruiterSummaryViewModel
+            {
+                RecruiterName = j.User.Username,
+                ApplicantName = j.Applicant_Master.FirstName + " " + j.Applicant_Master.LastName,
+                JobTitle = j.Job_Master.Title,
+                CompanyName = j.Job_Master.Company_Master.Company_Name,
+                Status = j.Status,
+                AssignedDate = j.Job_Master.TentativeDate
+            });
 
+            var pagedResult = report.ToList().ToPagedList(page ?? 1, 5);
 
+            return View(pagedResult);
         }
+
+        //public ActionResult RecruiterWorkDetail(int? recruiterId, int? companyId, int? page, string searchBy, string search)
+        //{
+        //    int teamLeaderId = (int)Session["UserId"];
+
+        //    if (searchBy == "Job Title")
+        //    {
+        //        return View(db.Job_Master.Where(x => x.Title.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+
+        //    }
+        //    else if (searchBy == "Company")
+        //    {
+        //        return View(db.Company_Master.Where(x => x.Company_Name.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+        //    }
+        //    else 
+        //    {
+        //            return View(db.Applicant_Master.Where(x => x.Status.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+        //    }
+
+
+
+        //    var report = db.Job_Applicant_Master
+        //         .Where(j => j.JobRef_Id != null &&
+        //                     j.Job_Master.TeamLeader_Id == teamLeaderId)
+        //         .Select(j => new RecruiterSummaryViewModel
+        //         {
+        //             RecruiterName = j.User.Username,
+        //             ApplicantName = j.Applicant_Master.FirstName + " " + j.Applicant_Master.LastName,
+        //             JobTitle = j.Job_Master.Title,
+        //             CompanyName = j.Job_Master.Company_Master.Company_Name,
+        //             Status = j.Status,
+        //             AssignedDate = j.Job_Master.TentativeDate
+        //         })
+        //         .ToList().ToPagedList(page ?? 1, 5);
+
+        //                return View(report);
+
+
+
+        //}
 
         #endregion
 

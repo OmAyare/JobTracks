@@ -1,4 +1,12 @@
-﻿@model IEnumerable<JobTracks.Areas.Recruiter.Data.AssignedJobViewModel>
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+
+@model IPagedList<JobTracks.Areas.Recruiter.Data.AssignedJobViewModel>
+
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
 @{
     ViewBag.Title = "Recruiter Dashboard";
@@ -6,6 +14,18 @@
 }
 
 <h2>My Assigned Jobs</h2>
+
+<p>
+    @using (Html.BeginForm("Dashboard", "Recruiter", FormMethod.Get))
+    {
+        <b>Search By:</b> @Html.RadioButton("SearchBy", "Job Title", true) <text>Job title</text>
+        @Html.RadioButton("SearchBy", "Tech Stack") <text>Tech Stack</text>
+        @Html.RadioButton("SearchBy", "Company") <text>Company</text>
+        @Html.RadioButton("SearchBy", "Status") <text> Status </text> <br /> <br />
+        @Html.TextBox("Search")<input type="submit" value="Search" />
+    }
+
+</p>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -32,3 +52,7 @@
         }
     </tbody>
 </table>
+
+
+@Html.PagedListPager(Model, page => Url.Action("Dashboard", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] })
+, new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })

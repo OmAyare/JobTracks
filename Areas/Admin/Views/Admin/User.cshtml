@@ -1,4 +1,13 @@
-﻿@model IEnumerable<JobTracks.Areas.Admin.Data.User>
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+
+@model IPagedList<JobTracks.Areas.Admin.Data.User>
+
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
 @{
     ViewBag.Title = "Index";
@@ -8,21 +17,29 @@
 
 <p>
     @Html.ActionLink("Create New", "Create", "null", new { @class = "btn btn-sm btn-outline-primary" }) | @Html.ActionLink("Create Role", "Create_Role", null, new { @class = "btn btn-sm btn-outline-primary" })
+</p>
+<p>
+    @using (Html.BeginForm("User", "Admin", FormMethod.Get))
+    {
+        <b>Search By:</b> @Html.RadioButton("SearchBy", "Username", true) <text>Employee Name </text>
+        @Html.RadioButton("SearchBy", "Role_id") <text>Position</text> <br /><br />
+        @Html.TextBox("Search")<input type="submit" value="Search" />
+    }
 
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Username)
+            @Html.DisplayNameFor(model => model.First().Username)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.First().Email)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Password)
+            @Html.DisplayNameFor(model => model.First().Password)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Role.Name)
+            @Html.DisplayNameFor(model => model.First().Role.Name)
         </th>
         <th></th>
     </tr>
@@ -44,8 +61,8 @@
             </td>
             <td>
                 @*@Html.ActionLink("Edit", "Edit", new { id = item.User_id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.User_id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.User_id })*@
+                    @Html.ActionLink("Details", "Details", new { id = item.User_id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.User_id })*@
                 <span>
                     @Html.ActionLink("Edit", "Edit", new { id = item.User_id }, new { @class = "btn btn-sm btn-outline-primary" })
                     @Html.ActionLink("Delete", "Delete", new { id = item.User_id }, new { @class = "btn btn-sm btn-outline-danger" })
@@ -56,6 +73,11 @@
 
 </table>
 
+@Html.PagedListPager(Model, page => Url.Action("User", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] })
+, new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })
+
+
 <div>
     @Html.ActionLink("Back to List", "Dashboard", "null", new { @class = "btn btn-sm btn-outline-primary" })
 </div>
+

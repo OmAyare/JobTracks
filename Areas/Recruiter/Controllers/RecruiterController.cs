@@ -2,62 +2,101 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using JobTracks.Areas.Admin.Data;
 using JobTracks.Areas.Recruiter.Data;
+using PagedList;
+using PagedList.Mvc;
 
 namespace JobTracks.Areas.Recruiter.Controllers
 {
     public class RecruiterController : Controller
     {
         JobTracksEntities db = new JobTracksEntities();
-        public ActionResult Dashboard()
+        public ActionResult Dashboard(int? page, string searchBy, string search)
         {
             int recruiterId = (int)Session["UserId"];
 
-            var jobs = db.Job_Master
-                .Where(j => j.Recruiter_Id == recruiterId)
-                .Select(j => new AssignedJobViewModel
-                {
-                    JobId = j.Job_id,
-                    Title = j.Title,
-                    TechStack = j.Tech_Stack,
-                    Status = j.status,
-                    CompanyName = j.Company_Master.Company_Name,
-                    CreatedDate = j.CreatedDate,
-                    TentativeDate = j.TentativeDate
-                })
-                .ToList();
+            var query = db.Job_Master
+                .Where(j => j.Recruiter_Id == recruiterId);
 
-            return View(jobs);
+            if (!string.IsNullOrEmpty(search))
+            {
+                switch (searchBy)
+                {
+                    case "Job Title":
+                        query = query.Where(j => j.Title.Contains(search));
+                        break;
+                    case "Company":
+                        query = query.Where(j => j.Company_Master.Company_Name.Contains(search));
+                        break;
+                    case "Tech Stack":
+                        query = query.Where(j => j.Tech_Stack.Contains(search));
+                        break;
+                    case "Status":
+                        query = query.Where(j => j.status.Contains(search));
+                        break;
+                }
+            }
+
+            var report = query.Select(j => new AssignedJobViewModel
+            {
+                JobId = j.Job_id,
+                Title = j.Title,
+                TechStack = j.Tech_Stack,
+                Status = j.status,
+                CompanyName = j.Company_Master.Company_Name,
+                CreatedDate = j.CreatedDate,
+                TentativeDate = j.TentativeDate
+            });
+
+            var pagedResult = report.ToList().ToPagedList(page ?? 1, 5);
+            return View(pagedResult);
         }
-        public ActionResult AssignApplicants()
+        public ActionResult AssignApplicants(int? page, string searchBy, string search)
         {
             int recruiterId = (int)Session["UserId"];
 
-            var data = db.Job_Applicant_Master
-                .Include("Applicant")
+            var query = db.Job_Applicant_Master
+                .Include("Applicant_Master")
                 .Include("Job_Ref.Company_Master")
-                .Where(j => j.Recuriter_ID == recruiterId)
-                .Select(j => new RecruiterApplicantListViewModel
+                .Where(j => j.Recuriter_ID == recruiterId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                switch (searchBy)
                 {
-                    JobApplicantId = j.Job_Id,
-                    ApplicantFullName = j.Applicant_Master.FirstName + " " + j.Applicant_Master.LastName,
-                    LastQualification = j.Applicant_Master.Last_Qualification,
-                    JobTitle = j.Job_Master.Title,
-                    CompanyName = j.Job_Master.Company_Master.Company_Name,
-                    TentativeDate = j.Job_Master.TentativeDate,
-                    ApplicantStatus = j.Status,
-                    MappedJobStatus =
+                    case "Qualification":
+                        query = query.Where(j => j.Applicant_Master.Last_Qualification.Contains(search));
+                        break;
+                    case "Company":
+                        query = query.Where(j => j.Job_Master.Company_Master.Company_Name.Contains(search));
+                        break;
+                    case "Status":
+                        query = query.Where(j => j.Status.Contains(search));
+                        break;
+                }
+            }
+
+            var report = query.Select(j => new RecruiterApplicantListViewModel
+            {
+                JobApplicantId = j.Job_Id,
+                ApplicantFullName = j.Applicant_Master.FirstName + " " + j.Applicant_Master.LastName,
+                LastQualification = j.Applicant_Master.Last_Qualification,
+                JobTitle = j.Job_Master.Title,
+                CompanyName = j.Job_Master.Company_Master.Company_Name,
+                TentativeDate = j.Job_Master.TentativeDate,
+                ApplicantStatus = j.Status,
+                MappedJobStatus =
                         j.Status == "Placed" ? "Close" :
                         j.Status == "Rejected" ? "Open" :
                         string.IsNullOrEmpty(j.Status) ? "Pending" :
                         "In Progress"
-                })
-                .ToList();
-
-            return View(data);
+            });
+                 var pagedResult = report.ToList().ToPagedList(page ?? 1, 5);
+            return View(pagedResult);
         }
 
         // GET: Edit Applicant Status
@@ -152,31 +191,6 @@ namespace JobTracks.Areas.Recruiter.Controllers
               return View();
         }
 
-        //[HttpPost]
-        //public ActionResult Add_Applicants([Bind(Include = "AppLicant_id,FirstName,LastName,Last_Qualification,PassOutYear,YearOfExperience,Resume,Status")] 
-        //Applicant_Master applicant ,HttpPostedFileBase ResumeFile) 
-        //{
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        if (ResumeFile != null && ResumeFile.ContentLength > 0)
-        //        {
-        //            var fileName = Path.GetFileName(ResumeFile.FileName);
-        //            var savePath = Path.Combine(Server.MapPath("~/Resumes"), fileName);
-        //            ResumeFile.SaveAs(savePath);
-
-        //            applicant.Resume = fileName; // store only the file name in DB
-        //        }
-
-
-        //        db.Applicant_Master.Add(applicant);
-        //        db.SaveChanges();
-        //        TempData["Success"] = "Applicant added successfully!";
-        //        return RedirectToAction("View_Applcants");
-        //    }
-        //    return View(applicant);
-        //}
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Add_Applicants(Applicant_Master applicant, HttpPostedFileBase ResumeFile)
@@ -221,10 +235,61 @@ namespace JobTracks.Areas.Recruiter.Controllers
             return View(applicant);
         }
 
-        public ActionResult View_Applcants()
+        public ActionResult View_Applcants(int? page,string searchBy, string search)
         {
-            var applicants = db.Applicant_Master.ToList();
+            if( searchBy == "Status")
+            {
+                return View(db.Applicant_Master.Where(x => x.Status.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+
+            }
+            else if( searchBy == "Last_Qualification")
+            {
+                return View(db.Applicant_Master.Where(x => x.Last_Qualification.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            else if (searchBy == "PassOutYear")
+            {
+                if (int.TryParse(search, out int passOutYear))
+                {
+                    return View(db.Applicant_Master.Where(x => x.PassOutYear == passOutYear || search == null).ToList().ToPagedList(page ?? 1, 5));
+                }
+            }
+            else if (searchBy == "YearOfExperience")
+            {
+                if (int.TryParse(search, out int experience))
+                {
+                    return View(db.Applicant_Master.Where(x => x.YearOfExperience == experience || search == null).ToList().ToPagedList(page ?? 1, 5));
+                }
+            }
+            else 
+            {
+                return View(db.Applicant_Master.Where(x => x.FirstName.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
+            }
+            var applicants = db.Applicant_Master.AsQueryable().ToList().ToPagedList(page ?? 1, 5);
             return View(applicants);
+        }
+
+        [HttpGet]
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Applicant_Master applicant = db.Applicant_Master.Find(id);
+            if (applicant == null)
+            {
+                return HttpNotFound();
+            }
+            return View(applicant);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            Applicant_Master applicant = db.Applicant_Master.Find(id);
+            db.Applicant_Master.Remove(applicant);
+            db.SaveChanges();
+            return RedirectToAction("View_Applcants");
         }
 
 

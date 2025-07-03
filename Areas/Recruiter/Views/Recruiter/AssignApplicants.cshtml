@@ -1,7 +1,15 @@
-﻿@model IEnumerable<JobTracks.Areas.Recruiter.Data.RecruiterApplicantListViewModel>
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+
+@model IPagedList<JobTracks.Areas.Recruiter.Data.RecruiterApplicantListViewModel>
 @{
     ViewBag.Title = "My Applicants";
 }
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
 <h2>My Applicants</h2>
 
@@ -11,6 +19,18 @@
     <div class="alert alert-success">@TempData["Success"]</div>
 }
 
+
+<p>
+    @using (Html.BeginForm("AssignApplicants", "Recruiter", FormMethod.Get))
+    {
+        <b>Search By:</b> @Html.RadioButton("SearchBy", "Qualification", true) <text>Qualification</text>
+        @Html.RadioButton("SearchBy", "Company") <text>Company</text>
+        @Html.RadioButton("SearchBy", "Status") <text> Status </text> <br /> <br />
+        @Html.TextBox("Search")<input type="submit" value="Search" />
+    }
+
+</p>
+
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -19,8 +39,8 @@
             <th>Job Title</th>
             <th>Company</th>
             <th>Tentative Date</th>
-            <th>Recruiter Status</th>
-            <th>TL Job Status</th>
+            <th> Status</th>
+            @*<th>TL Job Status</th>*@
             <th>Action</th>
         </tr>
     </thead>
@@ -34,7 +54,7 @@
                 <td>@item.CompanyName</td>
                 <td>@(item.TentativeDate?.ToString("dd-MMM-yyyy") ?? "-")</td>
                 <td>@(string.IsNullOrEmpty(item.ApplicantStatus) ? "Pending" : item.ApplicantStatus)</td>
-                <td>@item.MappedJobStatus</td>
+                @*<td>@item.MappedJobStatus</td>*@
                 <td>
                     @Html.ActionLink("Edit", "EditApplicantStatus", new { id = item.JobApplicantId }, new { @class = "btn btn-sm btn-outline-primary" })
 
@@ -43,3 +63,6 @@
         }
     </tbody>
 </table>
+
+@Html.PagedListPager(Model, page => Url.Action("AssignApplicants", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] })
+, new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })

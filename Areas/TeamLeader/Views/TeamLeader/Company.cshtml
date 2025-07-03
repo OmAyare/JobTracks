@@ -1,4 +1,11 @@
-﻿@model IEnumerable<JobTracks.Areas.Admin.Data.Job_Master>
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<JobTracks.Areas.Admin.Data.Job_Master>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
 @{
     ViewBag.Title = "Company";
@@ -9,80 +16,102 @@
 <p>
     @Html.ActionLink("Add New Company", "CreateCompany", "null", new { @class = "btn btn-sm btn-outline-primary" }) |  @Html.ActionLink("Assign Work", "AssignWork", "null", new { @class = "btn btn-sm btn-outline-primary" })
 </p>
+<p>
+    @using (Html.BeginForm("Company", "TeamLeader", FormMethod.Get))
+    {
+        <b>Search By:</b> @Html.RadioButton("SearchBy", "Company_Id", true) <text>Company Name </text>
+        @Html.RadioButton("SearchBy", "TeamLeader_Id") <text>Team Leader </text>
+        @Html.RadioButton("SearchBy", "Recruiter_Id") <text>Recuriter </text>
+        @Html.RadioButton("SearchBy", "Tech_Stack") <text>Tech Stack </text>
+        @Html.RadioButton("SearchBy", "Title") <text> Title </text>
+        @Html.RadioButton("SearchBy", "status") <text>Status </text> <br /><br />
+        @Html.TextBox("Search")<input type="submit" value="Search" />
+    }
+
+</p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.First().Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.First().Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Tech_Stack)
+            @Html.DisplayNameFor(model => model.First().Tech_Stack)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.status)
-        </th>
-        @*<th>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </th>*@
-        <th>
-            @Html.DisplayNameFor(model => model.TentativeDate)
+            @Html.DisplayNameFor(model => model.First().status)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Company_Master)
+            @Html.DisplayNameFor(model => model.First().Company_Master)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.User1)
+            @Html.DisplayNameFor(model => model.First().User1)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.User)
+            @Html.DisplayNameFor(model => model.First().User)
         </th>
-    
-    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Tech_Stack)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.status)
-        </td>
-        @*<td>
-            @Html.DisplayFor(modelItem => item.CreatedDate)
-        </td>*@
-        <td>
-            @Html.DisplayFor(modelItem => item.TentativeDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Company_Master.Company_Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.User1.Username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.Username)
-        </td>
-        <td>
-        <td>
-            <span  style="white-space: nowrap;">
-                @Html.ActionLink("Edit", "AssignWorkEdit", new { id = item.Job_id }, new { @class = "btn btn-sm btn-outline-primary" })
-                @Html.ActionLink("Delete", "AssignWorkDelete", new { id = item.Job_id }, new { @class = "btn btn-sm btn-outline-danger" })
-            </span>
-        </td>
-        </td>
+        <th></th>
     </tr>
-}
+    @if (Model.Count == 0)
+    {
+        <tr>
+            <td colspan="7">
+                No Rows Match the Search Criteria
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tech_Stack)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.status)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.TentativeDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Company_Master.Company_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User1.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Username)
+                </td>
+                <td>
+                <td>
+                    <span style="white-space: nowrap;">
+                        @Html.ActionLink("Edit", "AssignWorkEdit", new { id = item.Job_id }, new { @class = "btn btn-sm btn-outline-primary" })
+                        @Html.ActionLink("Delete", "AssignWorkDelete", new { id = item.Job_id }, new { @class = "btn btn-sm btn-outline-danger" })
+                    </span>
+                </td>
+                </td>
+            </tr>
+        }
+    }
 
 </table>
 
+@Html.PagedListPager(Model, page => Url.Action("Company", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] })
+, new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })
+
 <div>
-    @Html.ActionLink("Back to Dashboard", "Dashboard" , null , new { @class = "btn btn-sm btn-outline-primary" })
+    @Html.ActionLink("Back to Dashboard", "Dashboard", null, new { @class = "btn btn-sm btn-outline-primary" })
 </div>
