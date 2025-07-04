@@ -16,29 +16,31 @@ namespace JobTracks.Controllers
         {
             return View();
         }
-        // GET: Home
+
         [HttpPost]
         public ActionResult Index(User adlo)
         {
-
             if (ModelState.IsValid)
             {
-                var us = db.Users.Where(x => x.Username == adlo.Username && x.Password == adlo.Password).SingleOrDefault();
-                Session["UserId"] = us.User_id;
-                Session["Username"] = us.Username;
-                Session["RoleId"] = us.Role_id;
+                var us = db.Users.SingleOrDefault(x => x.Username == adlo.Username && x.Password == adlo.Password);
+                if (us != null)
+                {
+                    Session["UserId"] = us.User_id;
+                    Session["Username"] = us.Username;
+                    Session["RoleId"] = us.Role_id;
 
-                if (us.Role_id == 1)
-                    return RedirectToAction("Dashboard", "Admin", new { area = "Admin" });
-                else if (us.Role_id == 2)
-                    return RedirectToAction("Dashboard", "TeamLeader", new { area = "TeamLeader" }); 
-                else if (us.Role_id == 3)
-                    return RedirectToAction("Dashboard", "Recruiter", new { area = "Recruiter" }); 
+                    ViewBag.ShowAnimation = true;
+
+                    ViewBag.RoleId = us.Role_id;
+
+                    return View(adlo); 
+                }
             }
-
 
             ViewBag.Error = "Invalid username or password.";
             return View(adlo);
         }
+
+
     }
 }

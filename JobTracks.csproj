@@ -187,6 +187,9 @@
       <DependentUpon>JobTracksEntities.edmx</DependentUpon>
       <LastGenOutput>JobTracksEntities.cs</LastGenOutput>
     </Content>
+    <Content Include="Content\Animations\Welcome.mp4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />

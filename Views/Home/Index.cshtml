@@ -2,42 +2,113 @@
 
 @{
     ViewBag.Title = "Index";
+    Layout = null; // Optional: Fullscreen view
 }
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-grid.min.css" rel="stylesheet" />
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <style>
+        body {
+            background-color: #f9f9f9;
+            font-family: Arial;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
 
-<h2>Index</h2>
+        .form-horizontal {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 400px;
+        }
 
+        video {
+            width: 300px;
+            margin-top: 20px;
+        }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+        h2 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
 
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
-            </div>
+    @if (ViewBag.ShowAnimation == true)
+    {
+        <div id="animation">
+            <video autoplay muted playsinline>
+                <source src="@Url.Content("~/Content/Animations/Welcome.mp4")" type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+            <h2>Welcome, @Session["Username"]!</h2>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        <script>
+            setTimeout(function () {
+                var roleId = @ViewBag.RoleId;
+                var redirectUrl = "";
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Login" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
+                if (roleId === 1)
+                    redirectUrl = '@Url.Action("Dashboard", "Admin", new { area = "Admin" })';
+                else if (roleId === 2)
+                    redirectUrl = '@Url.Action("Dashboard", "TeamLeader", new { area = "TeamLeader" })';
+                else if (roleId === 3)
+                    redirectUrl = '@Url.Action("Dashboard", "Recruiter", new { area = "Recruiter" })';
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+                window.location.href = redirectUrl;
+            }, 4000);
+        </script>
+    }
+    else
+    {
+        <h2>Login</h2>
+
+        using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Login" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        if (ViewBag.Error != null)
+        {
+            <div style="color:red; margin-top:10px;">@ViewBag.Error</div>
+        }
+    }
+
+</body>
+</html>
