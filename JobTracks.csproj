@@ -158,6 +158,7 @@
     <Compile Include="Areas\Admin\Data\Role.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Admin\Data\Roles.cs" />
     <Compile Include="Areas\Admin\Data\User.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
@@ -170,6 +171,7 @@
     <Compile Include="Areas\TeamLeader\Controllers\TeamLeaderController.cs" />
     <Compile Include="Areas\TeamLeader\Data\RecruiterSummaryViewModel.cs" />
     <Compile Include="Areas\TeamLeader\TeamLeaderAreaRegistration.cs" />
+    <Compile Include="Common\RemoteClientServer.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -228,6 +230,7 @@
     <Content Include="Areas\Admin\Views\Shared\_Layout1.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Create_Role.cshtml" />
     <Content Include="image\logo.png" />
+    <Content Include="image\logo1.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />

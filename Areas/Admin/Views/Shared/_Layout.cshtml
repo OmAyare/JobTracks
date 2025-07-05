@@ -16,10 +16,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                    <img src="@Url.Content("~/image/logo.png")" alt="Logo" style="height:100px;" />
+                <a class="navbar-brand" href="@Url.Action("Dashboard", "Admin")">
+                    <img src="@Url.Content("~/image/logo1.png")" alt="Logo" style="height:100px;" />
                 </a>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Application name", "Dashboard", "Admin", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">

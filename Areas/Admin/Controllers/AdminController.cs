@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
+using System.Xml.Linq;
 using JobTracks.Areas.Admin.Data;
 using PagedList;
 using PagedList.Mvc;
@@ -150,6 +151,11 @@ namespace JobTracks.Areas.Admin.Controllers
             return RedirectToAction("User");
         }
 
+        [HttpGet]
+        public JsonResult IsRoleAvailable(string Name)
+        {
+            return Json(!db.Roles.Any(x => x.Name == Name),JsonRequestBehavior.AllowGet);
+        }
 
         [HttpGet]
         [ActionName("Create_Role")]
