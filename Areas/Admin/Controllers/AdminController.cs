@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -9,6 +10,8 @@ using System.Web.Mvc;
 using System.Web.UI;
 using System.Xml.Linq;
 using JobTracks.Areas.Admin.Data;
+using JobTracks.Common;
+using JobTracks.Filters;
 using PagedList;
 using PagedList.Mvc;
 
@@ -18,7 +21,8 @@ namespace JobTracks.Areas.Admin.Controllers
     {
         private JobTracksEntities db = new JobTracksEntities();
         // GET: Admin/Admin
-        
+
+        [ParitalCache("5minutescache")]
         [Route("Admin/Dashboard")]
         public ActionResult Dashboard()
         {
@@ -47,6 +51,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         /************************************** Users ********************************************/
         #region Users
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult User(int? page, string searchBy, string search)
         {
             var users = db.Users.AsQueryable().ToList().ToPagedList(page ?? 1, 5);
@@ -64,6 +69,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         [HttpGet]
         [Route("Admin/User/Create")]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Create()
         {
             ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name"); // Provide a dropdown for selecting 
@@ -72,8 +78,17 @@ namespace JobTracks.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Create
         [HttpPost]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Create([Bind(Include = "Username,Email,Password,Role_id")] User user)
         {
+            if (db.Users.Any(x => x.Username == user.Username))
+            {
+                ModelState.AddModelError("Username", "This Username is already in use");
+            }
+            if (db.Users.Any(x => x.Email == user.Email))
+            {
+                ModelState.AddModelError("Email", "This Email is already in use");
+            }
             if (ModelState.IsValid)
             {
                 db.Users.Add(user);
@@ -89,6 +104,7 @@ namespace JobTracks.Areas.Admin.Controllers
         // GET: Admin/Admin/Edit/5
         [HttpGet]
         [Route("Admin/User/Edit")]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -106,6 +122,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Edit/5
         [HttpPost]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Edit([Bind(Include = "User_id,Username,Email,Password,Role_id")] User tblemployee)
         {
 
@@ -127,6 +144,7 @@ namespace JobTracks.Areas.Admin.Controllers
         // GET: Admin/Admin/Delete/5
         [HttpGet]
         [Route("Admin/User/Delete")]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -143,6 +161,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Delete/5
         [HttpPost]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Delete(int id)
         {
             User tblEmployee = db.Users.Find(id);
@@ -152,14 +171,9 @@ namespace JobTracks.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public JsonResult IsRoleAvailable(string Name)
-        {
-            return Json(!db.Roles.Any(x => x.Name == Name),JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
         [ActionName("Create_Role")]
         [Route("Admin/Role/Create")]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Create_Role()
         {
             return View();
@@ -167,8 +181,13 @@ namespace JobTracks.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Create_Role")]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Create_Role(Role rol)
         {
+            if (db.Roles.Any(x => x.Name == rol.Name))
+            {
+                ModelState.AddModelError("Name", "This role is already in use");
+            }
             if (ModelState.IsValid)
             {
                 db.Roles.Add(rol);
@@ -181,6 +200,9 @@ namespace JobTracks.Areas.Admin.Controllers
         /************************************* Company *******************************************/
         #region Company
         [HttpGet]
+        [ParitalCache("5minutescache")]
+        [ValidateInput(false)]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Company(int? page, string searchBy, string search)
         {
             if (searchBy == "TeamLeader_Id")
@@ -212,14 +234,20 @@ namespace JobTracks.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult CreateCompany() 
         {
             return View();
         }
 
         [HttpPost]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult CreateCompany(Company_Master com)
         {
+            if (db.Company_Master.Any(x => x.Company_Name == com.Company_Name))
+            {
+                ModelState.AddModelError("Company_Name", "This Company Name is already in use");
+            }
             if (ModelState.IsValid)
             {
                 db.Company_Master.Add(com);
@@ -230,6 +258,7 @@ namespace JobTracks.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult AssignWork()
         {
             ViewBag.CompanyList = new SelectList(db.Company_Master, "Company_id", "Company_Name");
@@ -239,6 +268,7 @@ namespace JobTracks.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult AssignWork([Bind(Include = "status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title")] Job_Master job)
         {
             if (ModelState.IsValid)
@@ -258,6 +288,7 @@ namespace JobTracks.Areas.Admin.Controllers
         // GET: Admin/Admin/Delete/5
         [HttpGet]
         [Route("Admin/Compnay/Delete")]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult AssignWorkDelete(int? id)
         {
             if (id == null)
@@ -274,6 +305,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         // POST: Admin/Delete/5
         [HttpPost]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult AssignWorkDelete(int id)
         {
             Job_Master tblAssign = db.Job_Master.Find(id);
@@ -285,6 +317,7 @@ namespace JobTracks.Areas.Admin.Controllers
         // GET: Admin/Edit/5
         [HttpGet]
         [Route("Admin/Company/Edit")]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult AssignWorkEdit(int? id)
         {
             if (id == null)
@@ -304,6 +337,7 @@ namespace JobTracks.Areas.Admin.Controllers
 
         // POST: Admin/Edit/5
         [HttpPost]
+        [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult AssignWorkEdit([Bind(Include = "Job_id,status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title")] Job_Master tblAssign)
         {
 
@@ -326,6 +360,34 @@ namespace JobTracks.Areas.Admin.Controllers
         }
 
         #endregion
+        /************************************* Validation *******************************************/
+        [HttpGet]
+        [AuthorizeRoles(1)] // 1 = Admin
+        public JsonResult IsRoleAvailable(string Name)
+        {
+            return Json(!db.Roles.Any(x => x.Name == Name), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [AuthorizeRoles(1)] // 1 = Admin
+        public JsonResult IsUsernameAvailable(string Username)
+        {
+            return Json(!db.Users.Any(u => u.Username == Username), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [AuthorizeRoles(1)] // 1 = Admin
+        public JsonResult IsEmailAvailable(string Email)
+        {
+            return Json(!db.Users.Any(u => u.Email == Email), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [AuthorizeRoles(1)] // 1 = Admin
+        public JsonResult IsCompanynameAvailable(string Company_Name)
+        {
+            return Json(!db.Company_Master.Any(u => u.Company_Name == Company_Name), JsonRequestBehavior.AllowGet);
+        }
     }
 }
 
