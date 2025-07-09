@@ -1,11 +1,12 @@
-﻿@model JobTracks.Areas.Admin.Data.User
+﻿@model JobTracks.Models.Login
 
 @{
     ViewBag.Title = "Index";
-    Layout = null; // Optional: Fullscreen view
+    Layout = null; 
 }
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/bootstrap-grid.min.css" rel="stylesheet" />
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,6 +64,8 @@
                     redirectUrl = '@Url.Action("Dashboard", "TeamLeader", new { area = "TeamLeader" })';
                 else if (roleId === 3)
                     redirectUrl = '@Url.Action("Dashboard", "Recruiter", new { area = "Recruiter" })';
+                else
+                    redirectUrl  = '@Url.Action("NotFound", "Error")';
 
                 window.location.href = redirectUrl;
             }, 4000);
