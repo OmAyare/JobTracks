@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using JobTracks.Areas.Admin.Data;
 using JobTracks.Areas.Recruiter.Data;
+using JobTracks.Common;
 using PagedList;
 using PagedList.Mvc;
 
@@ -15,6 +16,9 @@ namespace JobTracks.Areas.Recruiter.Controllers
     public class RecruiterController : Controller
     {
         JobTracksEntities db = new JobTracksEntities();
+
+
+        [ParitalCache("5minutescache")]
         public ActionResult Dashboard(int? page, string searchBy, string search)
         {
             int recruiterId = (int)Session["UserId"];
@@ -193,6 +197,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult Add_Applicants(Applicant_Master applicant, HttpPostedFileBase ResumeFile)
         {
             if (ModelState.IsValid)
@@ -235,6 +240,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
             return View(applicant);
         }
 
+        [ParitalCache("5minutescache")]
         public ActionResult View_Applcants(int? page,string searchBy, string search)
         {
             if( searchBy == "Status")

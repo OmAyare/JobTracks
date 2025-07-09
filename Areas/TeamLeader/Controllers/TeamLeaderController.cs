@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Web.UI;
 using JobTracks.Areas.Admin.Data;
 using JobTracks.Areas.TeamLeader.Data;
+using JobTracks.Common;
 using PagedList;
 using PagedList.Mvc;
 
@@ -20,6 +21,8 @@ namespace JobTracks.Areas.TeamLeader.Controllers
 
         //Get : TeamLeader/Dashboard
 
+
+        [ParitalCache("5minutescache")]
         [Route("TeamLeader/Dashboard")]
         public ActionResult Dashboard()
         {
@@ -105,8 +108,13 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult CreateCompany(Company_Master com)
         {
+            if (db.Company_Master.Any(x => x.Company_Name == com.Company_Name))
+            {
+                ModelState.AddModelError("Company_Name", "This Company Name is already in use");
+            }
             if (ModelState.IsValid)
             {
                 db.Company_Master.Add(com);
@@ -117,6 +125,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         }
 
         [HttpGet]
+        [ParitalCache("10minutescache")]
         public ActionResult AssignWork()
         {
             ViewBag.CompanyList = new SelectList(db.Company_Master, "Company_id", "Company_Name");
@@ -214,6 +223,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
             return View(tblAssign);
         }
 
+        [ParitalCache("5minutescache")]
         public ActionResult RecruiterWorkDetail(int? recruiterId, int? companyId, int? page, string searchBy, string search)
         {
             int teamLeaderId = (int)Session["UserId"];
@@ -253,46 +263,6 @@ namespace JobTracks.Areas.TeamLeader.Controllers
 
             return View(pagedResult);
         }
-
-        //public ActionResult RecruiterWorkDetail(int? recruiterId, int? companyId, int? page, string searchBy, string search)
-        //{
-        //    int teamLeaderId = (int)Session["UserId"];
-
-        //    if (searchBy == "Job Title")
-        //    {
-        //        return View(db.Job_Master.Where(x => x.Title.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
-
-        //    }
-        //    else if (searchBy == "Company")
-        //    {
-        //        return View(db.Company_Master.Where(x => x.Company_Name.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
-        //    }
-        //    else 
-        //    {
-        //            return View(db.Applicant_Master.Where(x => x.Status.StartsWith(search) || search == null).ToList().ToPagedList(page ?? 1, 5));
-        //    }
-
-
-
-        //    var report = db.Job_Applicant_Master
-        //         .Where(j => j.JobRef_Id != null &&
-        //                     j.Job_Master.TeamLeader_Id == teamLeaderId)
-        //         .Select(j => new RecruiterSummaryViewModel
-        //         {
-        //             RecruiterName = j.User.Username,
-        //             ApplicantName = j.Applicant_Master.FirstName + " " + j.Applicant_Master.LastName,
-        //             JobTitle = j.Job_Master.Title,
-        //             CompanyName = j.Job_Master.Company_Master.Company_Name,
-        //             Status = j.Status,
-        //             AssignedDate = j.Job_Master.TentativeDate
-        //         })
-        //         .ToList().ToPagedList(page ?? 1, 5);
-
-        //                return View(report);
-
-
-
-        //}
 
         #endregion
 
