@@ -130,12 +130,15 @@
     <Compile Include="Areas\Admin\Data\Applicant_Master.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Admin\Data\Applicant_Masters.cs" />
     <Compile Include="Areas\Admin\Data\Company_Master.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Admin\Data\Company_Masters.cs" />
     <Compile Include="Areas\Admin\Data\Job_Applicant_Master.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Admin\Data\Job_Applicant_Masters.cs" />
     <Compile Include="Areas\Admin\Data\Job_Master.cs">
       <DependentUpon>JobTracksEntities.tt</DependentUpon>
     </Compile>
@@ -171,11 +174,17 @@
     <Compile Include="Areas\TeamLeader\Controllers\TeamLeaderController.cs" />
     <Compile Include="Areas\TeamLeader\Data\RecruiterSummaryViewModel.cs" />
     <Compile Include="Areas\TeamLeader\TeamLeaderAreaRegistration.cs" />
+    <Compile Include="Common\CurrentDateAttribute.cs" />
+    <Compile Include="Common\DateRangeAttribute.cs" />
+    <Compile Include="Common\ParitalCacheAttribute.cs" />
     <Compile Include="Common\RemoteClientServer.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Filters\AuthorizeRolesAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Login.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -289,11 +298,12 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
     <Folder Include="Resumes\" />
+    <Folder Include="Views\Error\" />
     <Folder Include="Views\TeamLeader\" />
   </ItemGroup>
   <ItemGroup>
