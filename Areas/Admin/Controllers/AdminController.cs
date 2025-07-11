@@ -24,31 +24,47 @@ namespace JobTracks.Areas.Admin.Controllers
 
         [ParitalCache("5minutescache")]
         [Route("Admin/Dashboard")]
-        public ActionResult Dashboard()
+        public ActionResult Dashboard(int? selectedYear)
         {
             if (Session["UserId"] == null || (int)Session["RoleId"] != 1)
+                return RedirectToAction("Index", "Home");
+
+            int currentYear = DateTime.Now.Year;
+            int year = selectedYear ?? currentYear;
+
+            // Fetch records for the selected year
+            var jobs = db.Job_Master
+                .Where(j => j.CreatedDate.Year == year)
+                .ToList();
+
+            // Get all years with job postings
+            var years = db.Job_Master
+                .Select(j => j.CreatedDate.Year)
+                .Distinct()
+                .OrderByDescending(y => y)
+                .ToList();
+
+            // Prepare 12 months
+            var months = Enumerable.Range(1, 12)
+                .Select(m => CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m))
+                .ToList();
+
+            // Prepare counts with zeros for all months
+            var counts = new int[12];
+
+            foreach (var job in jobs)
             {
-                return RedirectToAction("Index", "Home" , new { area = "" });
+                int monthIndex = job.CreatedDate.Month - 1;
+                counts[monthIndex]++;
             }
 
-            // Simulate fake data if CreatedDate isn't in DB
-            var jobList = db.Job_Master.ToList();
-
-            // If you don't have CreatedDate in DB, simulate it
-            var report = jobList
-                 .GroupBy(j => j.CreatedDate.Month)
-                 .Select(g => new {
-                     Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key),
-                     Count = g.Count()
-                 })
-                  .ToList();
-            ViewBag.Months = report.Select(x => x.Month).ToList();
-            ViewBag.Counts = report.Select(x => x.Count).ToList();
+            ViewBag.Months = months;
+            ViewBag.Counts = counts;
+            ViewBag.Years = years;
+            ViewBag.SelectedYear = year;
 
             return View();
-
         }
-
         /************************************** Users ********************************************/
         #region Users
         [AuthorizeRoles(1)] // 1 = Admin
