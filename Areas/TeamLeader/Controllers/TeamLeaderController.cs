@@ -10,6 +10,7 @@ using System.Web.UI;
 using JobTracks.Areas.Admin.Data;
 using JobTracks.Areas.TeamLeader.Data;
 using JobTracks.Common;
+using JobTracks.Filters;
 using PagedList;
 using PagedList.Mvc;
 
@@ -24,6 +25,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
 
         [ParitalCache("5minutescache")]
         [Route("TeamLeader/Dashboard")]
+        [AuthorizeRoles(2)] 
         public ActionResult Dashboard()
         {
            // int tlId = (int)Session["UserId"];
@@ -71,6 +73,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         #region Company
         [HttpGet]
         [Route("TeamLeaderr/Compnay")]
+        [AuthorizeRoles(2)]
         public ActionResult Company(int? page, string searchBy, string search)
         {
             if (searchBy == "TeamLeader_Id")
@@ -102,6 +105,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         }
 
         [HttpGet]
+        [AuthorizeRoles(2)]
         public ActionResult CreateCompany()
         {
             return View();
@@ -109,6 +113,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
+        [AuthorizeRoles(2)]
         public ActionResult CreateCompany(Company_Master com)
         {
             if (db.Company_Master.Any(x => x.Company_Name == com.Company_Name))
@@ -126,6 +131,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
 
         [HttpGet]
         [ParitalCache("10minutescache")]
+        [AuthorizeRoles(2)]
         public ActionResult AssignWork()
         {
             ViewBag.CompanyList = new SelectList(db.Company_Master, "Company_id", "Company_Name");
@@ -135,6 +141,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         }
 
         [HttpPost]
+        [AuthorizeRoles(2)]
         public ActionResult AssignWork([Bind(Include = "status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title,TentativeDate")] Job_Master job)
         {
             if (ModelState.IsValid)
@@ -155,6 +162,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         // GET: Admin/Admin/Delete/5
         [HttpGet]
         [Route("TeamLeaderr/Compnay/Delete")]
+        [AuthorizeRoles(2)]
         public ActionResult AssignWorkDelete(int? id)
         {
             if (id == null)
@@ -171,6 +179,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
 
         // POST: Admin/Delete/5
         [HttpPost]
+        [AuthorizeRoles(2)]
         public ActionResult AssignWorkDelete(int id)
         {
             Job_Master tblAssign = db.Job_Master.Find(id);
@@ -182,6 +191,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         // GET: Admin/Edit/5
         [HttpGet]
         [Route("TeamLeaderr/Company/Edit")]
+        [AuthorizeRoles(2)]
         public ActionResult AssignWorkEdit(int? id)
         {
             if (id == null)
@@ -201,6 +211,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
 
         // POST: Admin/Edit/5
         [HttpPost]
+        [AuthorizeRoles(2)]
         public ActionResult AssignWorkEdit([Bind(Include = "Job_id,status,Company_Id,TeamLeader_Id,Recruiter_Id,Tech_Stack,Description,Title,TentativeDate")] Job_Master tblAssign)
         {
 
@@ -224,6 +235,7 @@ namespace JobTracks.Areas.TeamLeader.Controllers
         }
 
         [ParitalCache("5minutescache")]
+        [AuthorizeRoles(2)]
         public ActionResult RecruiterWorkDetail(int? recruiterId, int? companyId, int? page, string searchBy, string search)
         {
             int teamLeaderId = (int)Session["UserId"];

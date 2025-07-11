@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using JobTracks.Areas.Admin.Data;
 using JobTracks.Areas.Recruiter.Data;
 using JobTracks.Common;
+using JobTracks.Filters;
 using PagedList;
 using PagedList.Mvc;
 
@@ -19,6 +20,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
 
 
         [ParitalCache("5minutescache")]
+        [AuthorizeRoles(3)]
         public ActionResult Dashboard(int? page, string searchBy, string search)
         {
             int recruiterId = (int)Session["UserId"];
@@ -59,6 +61,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
             var pagedResult = report.ToList().ToPagedList(page ?? 1, 5);
             return View(pagedResult);
         }
+        [AuthorizeRoles(3)]
         public ActionResult AssignApplicants(int? page, string searchBy, string search)
         {
             int recruiterId = (int)Session["UserId"];
@@ -104,6 +107,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
         }
 
         // GET: Edit Applicant Status
+        [AuthorizeRoles(3)]
         public ActionResult EditApplicantStatus(int id)
         {
             int recruiterId = (int)Session["UserId"];
@@ -147,6 +151,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
         // POST: Edit Applicant Status
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeRoles(3)]
         public ActionResult EditApplicantStatus(EditApplicantStatusViewModel model)
         {
             if (!ModelState.IsValid)
@@ -190,6 +195,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
         }
 
         [HttpGet]
+        [AuthorizeRoles(3)]
         public ActionResult Add_Applicants()
         { 
               return View();
@@ -198,6 +204,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
+        [AuthorizeRoles(3)]
         public ActionResult Add_Applicants(Applicant_Master applicant, HttpPostedFileBase ResumeFile)
         {
             if (ModelState.IsValid)
@@ -241,6 +248,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
         }
 
         [ParitalCache("5minutescache")]
+        [AuthorizeRoles(3)]
         public ActionResult View_Applcants(int? page,string searchBy, string search)
         {
             if( searchBy == "Status")
@@ -275,6 +283,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
         }
 
         [HttpGet]
+        [AuthorizeRoles(3)]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -290,6 +299,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
         }
 
         [HttpPost]
+        [AuthorizeRoles(3)]
         public ActionResult Delete(int id)
         {
             Applicant_Master applicant = db.Applicant_Master.Find(id);
