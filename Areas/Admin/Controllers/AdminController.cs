@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -22,7 +23,6 @@ namespace JobTracks.Areas.Admin.Controllers
         private JobTracksEntities db = new JobTracksEntities();
         // GET: Admin/Admin
 
-        [ParitalCache("5minutescache")]
         [Route("Admin/Dashboard")]
         public ActionResult Dashboard(int? selectedYear)
         {
@@ -82,82 +82,224 @@ namespace JobTracks.Areas.Admin.Controllers
             return View(users);
         }
 
-
         [HttpGet]
         [Route("Admin/User/Create")]
         [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Create()
         {
-            ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name"); // Provide a dropdown for selecting 
+            ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name");
             return View();
         }
 
-        // POST: Admin/Admin/Create
         [HttpPost]
-        [AuthorizeRoles(1)] // 1 = Admin
-        public ActionResult Create([Bind(Include = "Username,Email,Password,Role_id")] User user)
+        [ValidateAntiForgeryToken]
+        [AuthorizeRoles(1)]
+        public ActionResult Create(User user, HttpPostedFileBase UploadPhoto)
         {
             if (db.Users.Any(x => x.Username == user.Username))
-            {
-                ModelState.AddModelError("Username", "This Username is already in use");
-            }
+                ModelState.AddModelError("Username", "This username is already in use");
+
             if (db.Users.Any(x => x.Email == user.Email))
-            {
-                ModelState.AddModelError("Email", "This Email is already in use");
-            }
+                ModelState.AddModelError("Email", "This email is already in use");
+
             if (ModelState.IsValid)
             {
+                if (UploadPhoto != null && UploadPhoto.ContentLength > 0)
+                {
+                    string[] allowedExt = { ".jpg", ".jpeg", ".png", ".gif" };
+                    string ext = Path.GetExtension(UploadPhoto.FileName).ToLower();
+
+                    if (!allowedExt.Contains(ext))
+                    {
+                        ModelState.AddModelError("UploadPhoto", "Only JPG, PNG, and GIF formats are allowed.");
+                        ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name", user.Role_id);
+                        return View(user);
+                    }
+
+                    if (UploadPhoto.ContentLength > 2 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("UploadPhoto", "File size must be under 2MB.");
+                        ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name", user.Role_id);
+                        return View(user);
+                    }
+
+                    string filename = Guid.NewGuid().ToString() + ext;
+                    string path = Path.Combine(Server.MapPath("~/EmployeePhotos"), filename);
+                    Directory.CreateDirectory(Path.GetDirectoryName(path)); 
+                    UploadPhoto.SaveAs(path);
+
+                    user.Employee_Photo = filename;
+                }
+                else
+                {
+                    user.Employee_Photo = "default.jpg"; 
+                }
+
                 db.Users.Add(user);
                 db.SaveChanges();
-                return RedirectToAction("user", new { Role_id = user.Role_id });
+
+                return RedirectToAction("User", new { Role_id = user.Role_id });
             }
 
-            ViewBag.RoleId = new SelectList(db.Roles, "Id", "Name", user.Role_id.ToString()); 
-
+            ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name", user.Role_id);
             return View(user);
         }
 
-        // GET: Admin/Admin/Edit/5
+        public ActionResult ViewProfile()
+        {
+            int userId = Convert.ToInt32(Session["UserId"]);
+            var user = db.Users.Find(userId);
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ViewProfile(User model)
+        {
+            var user = db.Users.Find(model.User_id);
+
+            if (user != null)
+            {
+                // Update only allowed fields
+                user.FullName = model.FullName;
+                user.FatherName = model.FatherName;
+                user.MotherName = model.MotherName;
+                user.Gender = model.Gender;
+                user.DateOfBirth = model.DateOfBirth;
+                user.PhoneNumber = model.PhoneNumber;
+                user.AadharNumber = model.AadharNumber;
+                user.BloodGroup = model.BloodGroup;
+                user.UANNumber = model.UANNumber;
+
+                db.SaveChanges();
+                ViewBag.Message = "Profile updated successfully!";
+                return RedirectToAction("Dashboard", "Admin");
+            }
+            else
+            {
+                ViewBag.Error = "User not found!";
+            }
+
+            return View("ViewProfile", user);
+        }
+
+
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePassword(string currentPassword, string newPassword)
+        {
+            int userId = Convert.ToInt32(Session["UserId"]);
+            var user = db.Users.Find(userId);
+
+            if (user.Password != currentPassword.Trim())
+            {
+                ViewBag.Error = "Old password does not match.";
+                return View();
+            }
+
+            user.Password = newPassword.Trim();
+            db.SaveChanges();
+            ViewBag.Message = "Password updated successfully!";
+            return RedirectToAction("Dashboard", "Admin");
+        }
+
         [HttpGet]
         [Route("Admin/User/Edit")]
         [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Edit(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            }
-            User user = db.Users.Find(id); // Find user by ID
+
+            var user = db.Users.Find(id);
             if (user == null)
-            {
                 return HttpNotFound();
-            }
-            ViewBag.RoleId = new SelectList(db.Roles, "Id", "Name", user.Role_id); // Dropdown for Roles
+
+            ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name");
             return View(user);
         }
 
-        // POST: Admin/Admin/Edit/5
+        // POST: Admin/User/Edit/5
         [HttpPost]
         [AuthorizeRoles(1)] // 1 = Admin
-        public ActionResult Edit([Bind(Include = "User_id,Username,Email,Password,Role_id")] User tblemployee)
+        public ActionResult Edit([Bind(Include = "User_id,Username,Email,PhoneNumber,Role_id,FullName,FatherName,MotherName,Gender,DateOfBirth,JoiningDate,Branch,AadharNumber,UANNumber,BloodGroup,BankAccount_1,BankAccount_2,Employee_Photo,Password")] User tblemployee, HttpPostedFileBase UploadPhoto)
         {
+            if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine("Error: " + error.ErrorMessage);
+                }
 
-            User EmployeeFromDb = db.Users.Single(x => x.User_id == tblemployee.User_id);
+                ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name", tblemployee.Role_id);
+                return View(tblemployee);
+            }
 
-            EmployeeFromDb.Username = tblemployee.Username;
-            EmployeeFromDb.Role_id = tblemployee.Role_id;
-            EmployeeFromDb.Password = tblemployee.Password;
-            EmployeeFromDb.Email = tblemployee.Email;
+            var userInDb = db.Users.Find(tblemployee.User_id);
+            if (userInDb == null)
+                return HttpNotFound();
+
+            // Update all properties
+            userInDb.Username = tblemployee.Username;
+            userInDb.Email = tblemployee.Email;
+            userInDb.PhoneNumber = tblemployee.PhoneNumber;
+            userInDb.Role_id = tblemployee.Role_id;
+            userInDb.FullName = tblemployee.FullName;
+            userInDb.FatherName = tblemployee.FatherName;
+            userInDb.MotherName = tblemployee.MotherName;
+            userInDb.Gender = tblemployee.Gender;
+            userInDb.Password = tblemployee.Password;
+            userInDb.DateOfBirth = tblemployee.DateOfBirth;
+            userInDb.JoiningDate = tblemployee.JoiningDate;
+            userInDb.Branch = tblemployee.Branch;
+            userInDb.AadharNumber = tblemployee.AadharNumber;
+            userInDb.UANNumber = tblemployee.UANNumber;
+            userInDb.BloodGroup = tblemployee.BloodGroup;
+            userInDb.BankAccount_1 = tblemployee.BankAccount_1;
+            userInDb.BankAccount_2 = tblemployee.BankAccount_2;
+            if (UploadPhoto != null && UploadPhoto.ContentLength > 0)
+            {
+                string[] allowedExt = { ".jpg", ".jpeg", ".png", ".gif" };
+                string ext = Path.GetExtension(UploadPhoto.FileName).ToLower();
+
+                if (!allowedExt.Contains(ext))
+                {
+                    ModelState.AddModelError("UploadPhoto", "Only JPG, PNG, and GIF formats are allowed.");
+                    ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name", tblemployee.Role_id);
+                    return View(tblemployee);
+                }
+
+                if (UploadPhoto.ContentLength > 2 * 1024 * 1024)
+                {
+                    ModelState.AddModelError("UploadPhoto", "File size must be under 2MB.");
+                    ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name", tblemployee.Role_id);
+                    return View(tblemployee);
+                }
+
+                string filename = Guid.NewGuid().ToString() + ext;
+                string path = Path.Combine(Server.MapPath("~/EmployeePhotos"), filename);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                UploadPhoto.SaveAs(path);
+
+                // Set new filename in the DB
+                userInDb.Employee_Photo = filename;
+            }
+
             if (ModelState.IsValid)
             {
-                db.Entry(EmployeeFromDb).State = EntityState.Modified;
+                db.Entry(userInDb).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("User" ,new { Role_id = tblemployee.Role_id.ToString()});
+                return RedirectToAction("user", new { Role_id = tblemployee.Role_id });
             }
+            ViewBag.RoleList = new SelectList(db.Roles, "Id", "Name", tblemployee.Role_id);
             return View(tblemployee);
         }
 
-        // GET: Admin/Admin/Delete/5
         [HttpGet]
         [Route("Admin/User/Delete")]
         [AuthorizeRoles(1)] // 1 = Admin
@@ -216,7 +358,6 @@ namespace JobTracks.Areas.Admin.Controllers
         /************************************* Company *******************************************/
         #region Company
         [HttpGet]
-        [ParitalCache("5minutescache")]
         [ValidateInput(false)]
         [AuthorizeRoles(1)] // 1 = Admin
         public ActionResult Company(int? page, string searchBy, string search)
@@ -404,6 +545,14 @@ namespace JobTracks.Areas.Admin.Controllers
         {
             return Json(!db.Company_Master.Any(u => u.Company_Name == Company_Name), JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Logout()
+        {
+            Session.Clear();
+            Session.Abandon();
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
 
