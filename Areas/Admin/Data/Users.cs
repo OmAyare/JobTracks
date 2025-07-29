@@ -30,13 +30,30 @@ namespace JobTracks.Areas.Admin.Data
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
         [StringLength(100, MinimumLength = 2)]
-        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Need to Assign the Role to the User")]
+        [Display(Name ="Role")]
         public Nullable<int> Role_id { get; set; }
+        public string FullName { get; set; }
+        public string FatherName { get; set; }
+        public string MotherName { get; set; }
+        public string Gender { get; set; }
+
+        [DataType(DataType.Date)]
+        public Nullable<System.DateTime> DateOfBirth { get; set; }
+        [DataType(DataType.Date)]
+        public Nullable<System.DateTime> JoiningDate { get; set; }
+        public string Branch { get; set; }
+        public string AadharNumber { get; set; }
+        public string UANNumber { get; set; }
+        public string BloodGroup { get; set; }
+        public string BankAccount_1 { get; set; }
+        public string BankAccount_2 { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Employee_Photo { get; set; }
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Job_Applicant_Master> Job_Applicant_Master { get; set; }

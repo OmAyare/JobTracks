@@ -30,6 +30,8 @@ namespace JobTracks.Areas.Admin.Data
         public Nullable<int> Recruiter_Id { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public Nullable<System.DateTime> TentativeDate { get; set; }
+        public int RequiredCount { get; set; }
+        public int PlacedCount { get; set; }
     
         public virtual Company_Master Company_Master { get; set; }
         public virtual User User { get; set; }

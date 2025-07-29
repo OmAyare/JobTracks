@@ -48,12 +48,18 @@ namespace JobTracks.Areas.Admin.Data
         public Nullable<int> Recruiter_Id { get; set; }
         [Required]
         [CurrentDate(ErrorMessage = "Date cannot be in the future.")]
+        [DataType(DataType.Date)]
         [DisplayName("Created Date")]
         public System.DateTime CreatedDate { get; set; }
 
-        [DateRange("01/01/2000", ErrorMessage = "Tentative date must be later than 01-Jan-2000.")]
         [DisplayName("Tentative Date")]
-        public Nullable<System.DateTime> TentativeDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}") ]
+        [DateRange("01-01-2000", ErrorMessage = "Tentative date must be after 01-Jan-2000.")]
+        public Nullable<DateTime> TentativeDate { get; set; }
+
+        public int RequiredCount { get; set; }
+        public int PlacedCount { get; set; }
 
         [ForeignKey("Company_Id")]
         [DisplayName("Company Name")]

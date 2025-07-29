@@ -50,6 +50,8 @@
           <Property Name="Recruiter_Id" Type="int" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="TentativeDate" Type="datetime" />
+          <Property Name="RequiredCount" Type="int" Nullable="false" />
+          <Property Name="PlacedCount" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Roles">
           <Key>
@@ -67,6 +69,20 @@
           <Property Name="Email" Type="varchar" MaxLength="75" Nullable="false" />
           <Property Name="Password" Type="varchar" MaxLength="55" Nullable="false" />
           <Property Name="Role_id" Type="int" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="100" />
+          <Property Name="FatherName" Type="nvarchar" MaxLength="100" />
+          <Property Name="MotherName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="10" />
+          <Property Name="DateOfBirth" Type="date" />
+          <Property Name="JoiningDate" Type="date" />
+          <Property Name="Branch" Type="nvarchar" MaxLength="50" />
+          <Property Name="AadharNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="UANNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="BloodGroup" Type="nvarchar" MaxLength="10" />
+          <Property Name="BankAccount_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="BankAccount_2" Type="nvarchar" MaxLength="30" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="15" />
+          <Property Name="Employee_Photo" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <Association Name="FK__Job_Maste__Compa__5165187F">
           <End Role="Company_Master" Type="Self.Company_Master" Multiplicity="0..1" />
@@ -227,6 +243,20 @@
           <NavigationProperty Name="Job_Applicant_Master" Relationship="Models.FK_JobApplicant_Recruiter" FromRole="User" ToRole="Job_Applicant_Master" />
           <NavigationProperty Name="Job_Master" Relationship="Models.FK__Job_Maste__Recru__534D60F1" FromRole="User" ToRole="Job_Master" />
           <NavigationProperty Name="Job_Master1" Relationship="Models.FK__Job_Maste__TeamL__52593CB8" FromRole="User" ToRole="Job_Master" />
+          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FatherName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MotherName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfBirth" Type="DateTime" Precision="0" />
+          <Property Name="JoiningDate" Type="DateTime" Precision="0" />
+          <Property Name="Branch" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AadharNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UANNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="BloodGroup" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccount_1" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccount_2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Employee_Photo" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK__Users__Role_id__3A81B327">
           <End Role="Roles" Type="Self.Role" Multiplicity="0..1" />
@@ -316,6 +346,8 @@
           <NavigationProperty Name="User" Relationship="Models.FK__Job_Maste__Recru__534D60F1" FromRole="Job_Master" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="Models.FK__Job_Maste__TeamL__52593CB8" FromRole="Job_Master" ToRole="User" />
           <NavigationProperty Name="Job_Applicant_Master" Relationship="Models.FK_JobApplicant_JobRef" FromRole="Job_Master" ToRole="Job_Applicant_Master" />
+          <Property Name="RequiredCount" Type="Int32" Nullable="false" />
+          <Property Name="PlacedCount" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_JobApplicant_Applicant">
           <End Type="Models.Applicant_Master" Role="Applicant_Master" Multiplicity="1" />
@@ -420,6 +452,20 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="Models.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Employee_Photo" ColumnName="Employee_Photo" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="BankAccount_2" ColumnName="BankAccount_2" />
+                <ScalarProperty Name="BankAccount_1" ColumnName="BankAccount_1" />
+                <ScalarProperty Name="BloodGroup" ColumnName="BloodGroup" />
+                <ScalarProperty Name="UANNumber" ColumnName="UANNumber" />
+                <ScalarProperty Name="AadharNumber" ColumnName="AadharNumber" />
+                <ScalarProperty Name="Branch" ColumnName="Branch" />
+                <ScalarProperty Name="JoiningDate" ColumnName="JoiningDate" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="MotherName" ColumnName="MotherName" />
+                <ScalarProperty Name="FatherName" ColumnName="FatherName" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
                 <ScalarProperty Name="User_id" ColumnName="User_id" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
@@ -451,6 +497,8 @@
           <EntitySetMapping Name="Job_Master">
             <EntityTypeMapping TypeName="Models.Job_Master">
               <MappingFragment StoreEntitySet="Job_Master">
+                <ScalarProperty Name="PlacedCount" ColumnName="PlacedCount" />
+                <ScalarProperty Name="RequiredCount" ColumnName="RequiredCount" />
                 <ScalarProperty Name="TentativeDate" ColumnName="TentativeDate" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Recruiter_Id" ColumnName="Recruiter_Id" />
