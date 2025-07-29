@@ -1,80 +1,56 @@
 ﻿@model JobTracks.Areas.Admin.Data.Job_Master
 
 @{
-    ViewBag.Title = "AssignWorkDelete";
+    ViewBag.Title = "Delete Assigned Work";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout1.cshtml";
 }
 
-<h2>AssignWorkDelete</h2>
+<h2 class="text-danger">Delete Assigned Work</h2>
+<h5 class="mb-4">Are you sure you want to delete this assigned job?</h5>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Job_Master</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Title</label>
+        <div class="form-control-plaintext">@Model.Title</div>
+    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Description</label>
+        <div class="form-control-plaintext">@Model.Description</div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Tech Stack</label>
+        <div class="form-control-plaintext">@Model.Tech_Stack</div>
+    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Status</label>
+        <div class="form-control-plaintext">@Model.status</div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Tech_Stack)
-        </dt>
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Company</label>
+        <div class="form-control-plaintext">@Model.Company_Master.Company_Name</div>
+    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Tech_Stack)
-        </dd>
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Team Leader</label>
+        <div class="form-control-plaintext">@Model.User1.Username</div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.status)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.status)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Company_Master.Company_Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Company_Master.Company_Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User1.Username)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User1.Username)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.Username)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.Username)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Company", "null", new { @class = "btn btn-sm btn-outline-primary" })
-        </div>
-    }
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Recruiter</label>
+        <div class="form-control-plaintext">@Model.User.Username</div>
+    </div>
 </div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        @Html.ActionLink("Cancel", "Company", "Admin", null, new { @class = "btn btn-outline-secondary" })
+    </div>
+}

@@ -1,21 +1,35 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Dashboard";
     Layout = "~/Areas/Admin/Views/Shared/_Layout1.cshtml";
-
 }
 
-<h3>Admin Dashboard</h3>
+<h3 class="mb-3">Admin Dashboard</h3>
 
 <h5>Monthly Report</h5>
 
-<h5>Monthly Job Posting Report</h5>
+<div class="d-flex align-items-center mb-4 flex-wrap">
+    <label for="selectedYear" class="me-2"><b>Select Year:</b></label>
+    <form method="get" action="@Url.Action("Dashboard", "Admin")">
+        <select name="selectedYear" id="selectedYear" class="form-select form-select-sm"
+                style="width: 130px;" onchange="this.form.submit()">
+            @foreach (var year in ViewBag.Years as List<int>)
+            {
+                <option value="@year" @(year == ViewBag.SelectedYear ? "selected" : "")>@year</option>
+            }
+        </select>
+    </form>
+</div>
 
-<canvas id="jobChart" width="400" height="200"></canvas>
+<!-- Fixed 12-month width and full-height container -->
+<div style="width: 1000px; height: 450px;">
+    <canvas id="jobChart" width="1000" height="450"></canvas>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    var ctx = document.getElementById('jobChart').getContext('2d');
-    var jobChart = new Chart(ctx, {
+    const ctx = document.getElementById('jobChart').getContext('2d');
+    const jobChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: @Html.Raw(Json.Encode(ViewBag.Months)),
@@ -26,10 +40,19 @@
             }]
         },
         options: {
-            responsive: true,
+            responsive: false,
+            maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true }
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
             }
         }
     });
 </script>
+
+
+

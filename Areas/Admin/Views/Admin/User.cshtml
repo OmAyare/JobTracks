@@ -1,4 +1,4 @@
-﻿@using PagedList;
+﻿﻿@using PagedList;
 @using PagedList.Mvc;
 
 
@@ -6,78 +6,74 @@
 
 
 <link href="~/Content/PagedList.css" rel="stylesheet" />
-<link href="~/Content/Site.css" rel="stylesheet" />
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout1.cshtml";
 }
+<div class="container-fluid px-4">
+    <h2>Index</h2>
 
-<h2>Index</h2>
+    <p class="d-flex flex-wrap gap-2">
+        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-sm btn-outline-primary" })
+        @Html.ActionLink("Create Role", "Create_Role", null, new { @class = "btn btn-sm btn-outline-primary" })
+    </p>
 
-<p>
-    @Html.ActionLink("Create New", "Create", "null", new { @class = "btn btn-sm btn-outline-primary" }) | @Html.ActionLink("Create Role", "Create_Role", null, new { @class = "btn btn-sm btn-outline-primary" })
-</p>
-<p>
-    @using (Html.BeginForm("User", "Admin", FormMethod.Get))
-    {
-        <b>Search By:</b> @Html.RadioButton("SearchBy", "Username", true) <text>Employee Name </text>
-        @Html.RadioButton("SearchBy", "Role_id") <text>Position</text> <br /><br />
-        @Html.TextBox("Search")<input type="submit" value="Search" />
-    }
+    <p>
+        @using (Html.BeginForm("User", "Admin", FormMethod.Get))
+        {
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-auto"><b>Search By:</b></div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Username", true) Employee Name</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Role_id") Position</div>
+                <div class="col-auto">@Html.TextBox("Search", ViewBag.CurrentFilter as string, new { @class = "form-control" })</div>
+                <div class="col-auto"><input type="submit" value="Search" class="btn btn-outline-secondary" /></div>
+            </div>
+        }
+    </p>
 
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Username)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Password)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Role.Name)
-        </th>
-        <th></th>
-    </tr>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.First().Username)</th>
+                    <th>@Html.DisplayNameFor(m => m.First().Email)</th>
+                    <th>@Html.DisplayNameFor(m => m.First().PhoneNumber)</th>
+                    <th>@Html.DisplayNameFor(m => m.First().Role.Name)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Username</td>
+                        <td>@item.Email</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.Role.Name</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                @Html.ActionLink("Edit", "Edit", new { id = item.User_id }, new { @class = "btn btn-sm btn-outline-primary" })
+                                @Html.ActionLink("Delete", "Delete", new { id = item.User_id }, new { @class = "btn btn-sm btn-outline-danger" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role.Name)
-            </td>
-            <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id = item.User_id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.User_id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.User_id })*@
-                <span>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.User_id }, new { @class = "btn btn-sm btn-outline-primary" })
-                    @Html.ActionLink("Delete", "Delete", new { id = item.User_id }, new { @class = "btn btn-sm btn-outline-danger" })
-                </span>
-            </td>
-        </tr>
-    }
+    <div class="mb-3">
+        @Html.PagedListPager(Model, page => Url.Action("User", new { page, SearchBy = Request["SearchBy"], Search = Request["Search"] }),
+            new PagedListRenderOptions()
+            {
+                Display = PagedListDisplayMode.IfNeeded,
+                DisplayPageCountAndCurrentLocation = true
+            })
+    </div>
 
-</table>
-
-@Html.PagedListPager(Model, page => Url.Action("User", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] })
-, new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })
-
-
-<div>
-    @Html.ActionLink("Back to List", "Dashboard", "null", new { @class = "btn btn-sm btn-outline-primary" })
+    <div>
+        @Html.ActionLink("Back to Dashboard", "Dashboard", "Admin", new { }, new { @class = "btn btn-outline-secondary" })
+    </div>
 </div>
-
