@@ -180,7 +180,6 @@
     <Compile Include="Common\RemoteClientServer.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Filters\AuthorizeRolesAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -310,14 +309,12 @@
     <Content Include="Views\Home\ForgotPassword.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\ViewProfile.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\ChangePassword.cshtml" />
-    <Content Include="Views\Test\Index.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="EmployeePhotos\" />
     <Folder Include="Resumes\" />
-    <Folder Include="Views\Error\" />
-    <Folder Include="Views\TeamLeader\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

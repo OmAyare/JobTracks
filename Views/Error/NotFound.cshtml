@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Page Not Found";
+}
+
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+    <div class="text-center">
+        <h1 class="display-1 fw-bold text-danger">404</h1>
+        <p class="lead mb-4">Oops! The page you’re looking for doesn’t exist or is under development.</p>
+
+        <div class="alert alert-info shadow-sm" style="max-width: 600px; margin: 0 auto;">
+            <h5><strong>Note:</strong> This application is currently in development mode.</h5>
+            <p class="mb-2">Only the following roles are fully supported:</p>
+            <ul class="list-unstyled text-start mb-0">
+                <li><i class="bi bi-check-circle-fill text-success"></i> <strong>Admin</strong></li>
+                <li><i class="bi bi-check-circle-fill text-success"></i> <strong>Team Leader</strong></li>
+                <li><i class="bi bi-check-circle-fill text-success"></i> <strong>Recruiter</strong></li>
+            </ul>
+        </div>
+
+        <p class="mt-4">Please verify your role and try logging in with valid credentials.</p>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary px-4 mt-2">Go to Home</a>
+    </div>
+</div>
