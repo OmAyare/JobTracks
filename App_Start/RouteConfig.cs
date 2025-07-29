@@ -16,8 +16,7 @@ namespace JobTracks
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-                namespaces: new[] {"JobTracks.Areas.Amin.Controllers"}
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
     }
