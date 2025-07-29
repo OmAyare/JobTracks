@@ -16,5 +16,8 @@ namespace JobTracks.Areas.Recruiter.Data
 
         public IEnumerable<SelectListItem> JobOptions { get; set; }
         public IEnumerable<SelectListItem> StatusOptions { get; set; }
+
+        public int? PlacedCount { get; set; }
+        public int? RequiredCount { get; set; }
     }
 }

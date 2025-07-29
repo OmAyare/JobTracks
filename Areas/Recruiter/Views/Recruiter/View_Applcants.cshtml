@@ -1,106 +1,108 @@
-﻿@using PagedList;
-@using PagedList.Mvc;
+﻿@using PagedList
+@using PagedList.Mvc
 
 @model IPagedList<JobTracks.Areas.Admin.Data.Applicant_Master>
 
 @{
-    ViewBag.Title = "View_Applcants";
+    ViewBag.Title = "View Applicants";
+    Layout = "~/Areas/Recruiter/Views/Shared/_Layout1.cshtml";
 }
-<link href="~/Content/PagedList.css" rel="stylesheet" />
-<link href="~/Content/Site.css" rel="stylesheet" />
+
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-<h2>View_Applcants</h2>
+<link href="~/Content/PagedList.css" rel="stylesheet" />
 
-<p>
-    @Html.ActionLink("Create New", "Add_Applicants")
-</p>
-<p>
-    @using (Html.BeginForm("View_Applcants", "Recruiter", FormMethod.Get))
-    {
-        <b>Search By:</b> @Html.RadioButton("SearchBy", "Name", true) <text>Name</text>
-        @Html.RadioButton("SearchBy", "Last_Qualification") <text>Last Qualification</text>
-        @Html.RadioButton("SearchBy", "PassOutYear") <text> Pass Out Year</text>
-        @Html.RadioButton("SearchBy", "YearOfExperience") <text> Experience</text>
-        @Html.RadioButton("SearchBy", "Status") <text> Status</text> <br />
-        @Html.TextBox("Search")<input type="submit" value="Search" />
-    }
+<div class="container-fluid px-4">
+    <h2 class="mb-4">View Applicants</h2>
 
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.First().FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().LastName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Last_Qualification)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().PassOutYear)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().YearOfExperience)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Resume)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Status)
-        </th>
-        <th></th>
-    </tr>
-    @if (Model.Count == 0)
-    {
-        <tr>
-            <td colspan="7">
-                No Rows Match the Search Criteria
-            </td>
-        </tr>
-    }
-    else
-    {
-        foreach (var item in Model)
+    <p>
+        @Html.ActionLink("Add New Applicant", "Add_Applicants", null, new { @class = "btn btn-outline-primary" })
+    </p>
+
+    <div class="mb-3">
+        @using (Html.BeginForm("View_Applcants", "Recruiter", FormMethod.Get))
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Last_Qualification)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PassOutYear)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.YearOfExperience)
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.Resume))
-                    {
-                        <a href="@Url.Content("~/Resumes/" + item.Resume)" target="_blank">View Resume</a>
-                    }
-                    else
-                    {
-                        <span class="text-muted">No Resume</span>
-                    }
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.ActionLink("Delete", "Delete", new { id = item.AppLicant_id }, new { @class = "btn btn-sm btn-outline-primary" })
-                </td>
-            </tr>
+            <div class="row g-2 align-items-center">
+                <div class="col-auto"><strong>Search By:</strong></div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Name", true) Name</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Last_Qualification") Last Qualification</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "PassOutYear") Pass Out Year</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "YearOfExperience") Experience</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Status") Status</div>
+                <div class="col-auto">@Html.TextBox("Search", Request.QueryString["Search"], new { @class = "form-control", placeholder = "Enter keyword" })</div>
+                <div class="col-auto"><input type="submit" value="Search" class="btn btn-outline-secondary" /></div>
+            </div>
         }
-    }
+    </div>
 
-</table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.First().FirstName)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().LastName)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().Last_Qualification)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().PassOutYear)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().YearOfExperience)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().Resume)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().Status)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-muted">No Rows Match the Search Criteria</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.FirstName</td>
+                            <td>@item.LastName</td>
+                            <td>@item.Last_Qualification</td>
+                            <td>@item.PassOutYear</td>
+                            <td>@item.YearOfExperience</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Resume))
+                                {
+                                    <a href="@Url.Content("~/Resumes/" + item.Resume)" target="_blank">View Resume</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No Resume</span>
+                                }
+                            </td>
+                            <td>@item.Status</td>
+                            <td>
+                                @Html.ActionLink("Delete", "Delete", new { id = item.AppLicant_id }, new { @class = "btn btn-sm btn-outline-danger" })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 
-@Html.PagedListPager(Model, page => Url.Action("View_Applcants", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] })
-, new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })
+    <div class="mb-3 text-center">
+        @Html.PagedListPager(Model, page => Url.Action("View_Applcants", new
+        {
+            page,
+            SearchBy = Request.QueryString["SearchBy"],
+            Search = Request.QueryString["Search"]
+        }),
+        new PagedListRenderOptions
+        {
+            Display = PagedListDisplayMode.IfNeeded,
+            DisplayPageCountAndCurrentLocation = true,
+            UlElementClasses = new[] { "pagination", "justify-content-center" },
+            LiElementClasses = new[] { "page-item" }
+        })
+    </div>
+
+    <div>
+        @Html.ActionLink("Back to Dashboard", "Dashboard", "Recruiter", null, new { @class = "btn btn-outline-secondary" })
+    </div>
+</div>

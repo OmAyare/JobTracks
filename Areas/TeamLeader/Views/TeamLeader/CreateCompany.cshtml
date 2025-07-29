@@ -2,15 +2,19 @@
 
 @{
     ViewBag.Title = "Create Company";
+    Layout = "~/Areas/TeamLeader/Views/Shared/_Layout1.cshtml";
 }
 
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
 <h2>Create Company</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
 
         <hr />
@@ -40,9 +44,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Company", "null", new { @class = "btn btn-sm btn-outline-primary" )
+    @Html.ActionLink("Back to List", "Company", "TeamLeader", new { @class = "btn btn-sm btn-outline-secondary" })
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using JobTracks.Areas.Admin.Data;
@@ -19,7 +20,6 @@ namespace JobTracks.Areas.Recruiter.Controllers
         JobTracksEntities db = new JobTracksEntities();
 
 
-        [ParitalCache("5minutescache")]
         [AuthorizeRoles(3)]
         public ActionResult Dashboard(int? page, string searchBy, string search)
         {
@@ -61,6 +61,71 @@ namespace JobTracks.Areas.Recruiter.Controllers
             var pagedResult = report.ToList().ToPagedList(page ?? 1, 5);
             return View(pagedResult);
         }
+
+
+        public ActionResult ViewProfile()
+        {
+            int userId = Convert.ToInt32(Session["UserId"]);
+            var user = db.Users.Find(userId);
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ViewProfile(User model)
+        {
+            var user = db.Users.Find(model.User_id);
+
+            if (user != null)
+            {
+                // Update only allowed fields
+                user.FullName = model.FullName;
+                user.FatherName = model.FatherName;
+                user.MotherName = model.MotherName;
+                user.Gender = model.Gender;
+                user.DateOfBirth = model.DateOfBirth;
+                user.PhoneNumber = model.PhoneNumber;
+                user.AadharNumber = model.AadharNumber;
+                user.BloodGroup = model.BloodGroup;
+                user.UANNumber = model.UANNumber;
+
+                db.SaveChanges();
+                ViewBag.Message = "Profile updated successfully!";
+                return RedirectToAction("Dashboard", "Admin");
+            }
+            else
+            {
+                ViewBag.Error = "User not found!";
+            }
+
+            return View("ViewProfile", user);
+        }
+
+
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePassword(string currentPassword, string newPassword)
+        {
+            int userId = Convert.ToInt32(Session["UserId"]);
+            var user = db.Users.Find(userId);
+
+            if (user.Password != currentPassword.Trim())
+            {
+                ViewBag.Error = "Old password does not match.";
+                return View();
+            }
+
+            user.Password = newPassword.Trim();
+            db.SaveChanges();
+            ViewBag.Message = "Password updated successfully!";
+            return RedirectToAction("Dashboard", "Admin");
+        }
+
         [AuthorizeRoles(3)]
         public ActionResult AssignApplicants(int? page, string searchBy, string search)
         {
@@ -68,8 +133,10 @@ namespace JobTracks.Areas.Recruiter.Controllers
 
             var query = db.Job_Applicant_Master
                 .Include("Applicant_Master")
-                .Include("Job_Ref.Company_Master")
-                .Where(j => j.Recuriter_ID == recruiterId);
+                .Include("Job_Master.Company_Master") // Include "Job_Master", not "Job_Ref"
+                .Where(j => j.Recuriter_ID == recruiterId &&
+                            j.Job_Master.status != "Archived" &&
+                            j.Job_Master.status != "Close");
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -87,14 +154,17 @@ namespace JobTracks.Areas.Recruiter.Controllers
                 }
             }
 
-            var report = query.Select(j => new RecruiterApplicantListViewModel
+            // Move projection to in-memory after .ToList()
+            var rawList = query.ToList(); // Materialize query first
+
+            var report = rawList.Select(j => new RecruiterApplicantListViewModel
             {
                 JobApplicantId = j.Job_Id,
                 ApplicantFullName = j.Applicant_Master.FirstName + " " + j.Applicant_Master.LastName,
                 LastQualification = j.Applicant_Master.Last_Qualification,
-                JobTitle = j.Job_Master.Title,
-                CompanyName = j.Job_Master.Company_Master.Company_Name,
-                TentativeDate = j.Job_Master.TentativeDate,
+                 JobTitle = j.Job_Master != null ? j.Job_Master.Title : "-",
+                CompanyName = j.Job_Master?.Company_Master?.Company_Name ?? "-",
+                TentativeDate = j.Job_Master?.TentativeDate,
                 ApplicantStatus = j.Status,
                 MappedJobStatus =
                         j.Status == "Placed" ? "Close" :
@@ -102,7 +172,8 @@ namespace JobTracks.Areas.Recruiter.Controllers
                         string.IsNullOrEmpty(j.Status) ? "Pending" :
                         "In Progress"
             });
-                 var pagedResult = report.ToList().ToPagedList(page ?? 1, 5);
+
+            var pagedResult = report.ToList().ToPagedList(page ?? 1, 5);
             return View(pagedResult);
         }
 
@@ -124,12 +195,14 @@ namespace JobTracks.Areas.Recruiter.Controllers
             {
                 JobApplicantId = record.Job_Id,
                 ApplicantName = record.Applicant_Master.FirstName + " " + record.Applicant_Master.LastName,
-                CurrentJobTitle = record.Job_Master.Title,
+                CurrentJobTitle = record.Job_Master?.Title ?? "Not Assigned",
                 SelectedJobId = record.JobRef_Id ?? 0,
                 SelectedStatus = record.Status,
+                PlacedCount = record.Job_Master?.PlacedCount ?? 0,
+                RequiredCount = record.Job_Master?.RequiredCount ?? 0,
 
                 JobOptions = db.Job_Master
-                    .Where(j => j.Recruiter_Id == recruiterId)
+                    .Where(j => j.Recruiter_Id == recruiterId && j.status != "Close" && j.status != "Archived")
                     .Select(j => new SelectListItem
                     {
                         Value = j.Job_id.ToString(),
@@ -143,6 +216,7 @@ namespace JobTracks.Areas.Recruiter.Controllers
                 new SelectListItem { Text = "Rejected", Value = "Rejected" },
                 new SelectListItem { Text = "Interview Scheduled", Value = "Interview Scheduled" }
             }
+             
             };
 
             return View(model);
@@ -154,6 +228,8 @@ namespace JobTracks.Areas.Recruiter.Controllers
         [AuthorizeRoles(3)]
         public ActionResult EditApplicantStatus(EditApplicantStatusViewModel model)
         {
+            int recruiterId = (int)Session["UserId"]; 
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -173,19 +249,32 @@ namespace JobTracks.Areas.Recruiter.Controllers
             var job = db.Job_Master.FirstOrDefault(j => j.Job_id == model.SelectedJobId);
             if (job != null)
             {
-                switch (model.SelectedStatus)
+                if (model.SelectedStatus == "Placed")
                 {
-                    case "Placed":
-                        job.status = "Close";
-                        break;
-                    case "Rejected":
-                        job.status = "Open";
-                        break;
-                    case "Shortlisted":
-                    case "Interview Scheduled":
-                        job.status = "In Progress";
-                        break;
+                    if (job.PlacedCount >= job.RequiredCount)
+                    {
+                        ModelState.AddModelError("", "Cannot mark as Placed. Required count has already been fulfilled.");
+                        model.StatusOptions = GetStatusOptions(); // helper method
+                        model.JobOptions = GetJobOptions(recruiterId); // helper method
+                        return View(model);
+                    }
+
+                    job.PlacedCount++;
+                    job.status = job.PlacedCount >= job.RequiredCount ? "Close" : "In Progress";
                 }
+                else if (model.SelectedStatus == "Rejected")
+                {
+                    job.PlacedCount--;
+                    job.status = (job.PlacedCount < job.RequiredCount && job.PlacedCount > 0) ? "In Progress" : "Open";
+                }
+            }
+            applicantRecord.Status = model.SelectedStatus;
+            applicantRecord.JobRef_Id = model.SelectedJobId;
+
+            var applicant = db.Applicant_Master.FirstOrDefault(a => a.AppLicant_id == applicantRecord.Applicant_ID);
+            if (applicant != null)
+            {
+                applicant.Status = model.SelectedStatus;
             }
 
             db.SaveChanges();
@@ -247,7 +336,6 @@ namespace JobTracks.Areas.Recruiter.Controllers
             return View(applicant);
         }
 
-        [ParitalCache("5minutescache")]
         [AuthorizeRoles(3)]
         public ActionResult View_Applcants(int? page,string searchBy, string search)
         {
@@ -306,6 +394,28 @@ namespace JobTracks.Areas.Recruiter.Controllers
             db.Applicant_Master.Remove(applicant);
             db.SaveChanges();
             return RedirectToAction("View_Applcants");
+        }
+
+        private List<SelectListItem> GetStatusOptions()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Placed", Value = "Placed" },
+                new SelectListItem { Text = "Shortlisted", Value = "Shortlisted" },
+                new SelectListItem { Text = "Rejected", Value = "Rejected" },
+                new SelectListItem { Text = "Interview Scheduled", Value = "Interview Scheduled" }
+            };
+        }
+
+        private List<SelectListItem> GetJobOptions(int recruiterId)
+        {
+            return db.Job_Master
+                .Where(j => j.Recruiter_Id == recruiterId && j.status != "Close" && j.status != "Archived")
+                .Select(j => new SelectListItem
+                {
+                    Value = j.Job_id.ToString(),
+                    Text = j.Title + " - " + j.Company_Master.Company_Name
+                }).ToList();
         }
 
 

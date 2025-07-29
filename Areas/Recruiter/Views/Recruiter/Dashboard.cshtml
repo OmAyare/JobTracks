@@ -1,58 +1,86 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
 
-
 @model IPagedList<JobTracks.Areas.Recruiter.Data.AssignedJobViewModel>
-
-
-<link href="~/Content/PagedList.css" rel="stylesheet" />
-<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
 @{
     ViewBag.Title = "Recruiter Dashboard";
     Layout = "~/Areas/Recruiter/Views/Shared/_Layout1.cshtml";
 }
 
-<h2>My Assigned Jobs</h2>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/PagedList.css" rel="stylesheet" />
 
-<p>
-    @using (Html.BeginForm("Dashboard", "Recruiter", FormMethod.Get))
-    {
-        <b>Search By:</b> @Html.RadioButton("SearchBy", "Job Title", true) <text>Job title</text>
-        @Html.RadioButton("SearchBy", "Tech Stack") <text>Tech Stack</text>
-        @Html.RadioButton("SearchBy", "Company") <text>Company</text>
-        @Html.RadioButton("SearchBy", "Status") <text> Status </text> <br /> <br />
-        @Html.TextBox("Search")<input type="submit" value="Search" />
-    }
+<div class="container-fluid px-4">
+    <h2>My Assigned Jobs</h2>
 
-</p>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Job Title</th>
-            <th>Tech Stack</th>
-            <th>Status</th>
-            <th>Company</th>
-            <th>Created</th>
-            <th>Tentative Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var job in Model)
+    <p>
+        @using (Html.BeginForm("Dashboard", "Recruiter", FormMethod.Get))
         {
-            <tr>
-                <td>@job.Title</td>
-                <td>@job.TechStack</td>
-                <td>@job.Status</td>
-                <td>@job.CompanyName</td>
-                <td>@job.CreatedDate?.ToString("dd-MMM-yyyy")</td>
-                <td>@job.TentativeDate?.ToString("dd-MMM-yyyy")</td>
-            </tr>
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-auto"><b>Search By:</b></div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Job Title", true) Job Title</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Tech Stack") Tech Stack</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Company") Company</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Status") Status</div>
+                <div class="col-auto">
+                    @Html.TextBox("Search", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+                </div>
+                <div class="col-auto">
+                    <input type="submit" value="Search" class="btn btn-outline-secondary" />
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </p>
 
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Job Title</th>
+                    <th>Tech Stack</th>
+                    <th>Status</th>
+                    <th>Company</th>
+                    <th>Created</th>
+                    <th>Tentative Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6">No Rows Match the Search Criteria</td></tr>
+                }
+                else
+                {
+                    foreach (var job in Model)
+                    {
+                        <tr>
+                            <td>@job.Title</td>
+                            <td>@job.TechStack</td>
+                            <td>@job.Status</td>
+                            <td>@job.CompanyName</td>
+                            <td>@(job.CreatedDate.HasValue ? job.CreatedDate.Value.ToString("dd-MMM-yyyy") : "-")</td>
+                            <td>@(job.TentativeDate.HasValue ? job.TentativeDate.Value.ToString("dd-MMM-yyyy") : "-")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
 
-@Html.PagedListPager(Model, page => Url.Action("Dashboard", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] })
-, new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })
+        </table>
+    </div>
+
+    <div class="mb-3">
+        @Html.PagedListPager(Model, page => Url.Action("Dashboard", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] }),
+            new PagedListRenderOptions
+            {
+                Display = PagedListDisplayMode.IfNeeded,
+                DisplayPageCountAndCurrentLocation = true,
+                UlElementClasses = new[] { "pagination", "justify-content-center" },
+                LiElementClasses = new[] { "page-item" }
+            })
+    </div>
+
+    @*<div>
+        @Html.ActionLink("Back to Dashboard", "Dashboard", "Recruiter", null, new { @class = "btn btn-outline-secondary" })
+    </div>*@
+</div>

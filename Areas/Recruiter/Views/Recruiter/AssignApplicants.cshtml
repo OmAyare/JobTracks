@@ -1,68 +1,106 @@
-﻿@using PagedList;
-@using PagedList.Mvc;
-
-
+﻿@using PagedList
+@using PagedList.Mvc
 @model IPagedList<JobTracks.Areas.Recruiter.Data.RecruiterApplicantListViewModel>
+
 @{
     ViewBag.Title = "My Applicants";
+    Layout = "~/Areas/Recruiter/Views/Shared/_Layout1.cshtml";
 }
 
-<link href="~/Content/PagedList.css" rel="stylesheet" />
-<link href="~/Content/Site.css" rel="stylesheet" />
+<!-- Stylesheets -->
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/PagedList.css" rel="stylesheet" />
 
-<h2>My Applicants</h2>
+<div class="container-fluid px-4">
+    <h2 class="mb-4">My Applicants</h2>
 
-
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-
-
-<p>
-    @using (Html.BeginForm("AssignApplicants", "Recruiter", FormMethod.Get))
+    <!-- Success Message -->
+    @if (TempData["Success"] != null)
     {
-        <b>Search By:</b> @Html.RadioButton("SearchBy", "Qualification", true) <text>Qualification</text>
-        @Html.RadioButton("SearchBy", "Company") <text>Company</text>
-        @Html.RadioButton("SearchBy", "Status") <text> Status </text> <br /> <br />
-        @Html.TextBox("Search")<input type="submit" value="Search" />
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
     }
 
-</p>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Applicant Name</th>
-            <th>Qualification</th>
-            <th>Job Title</th>
-            <th>Company</th>
-            <th>Tentative Date</th>
-            <th> Status</th>
-            @*<th>TL Job Status</th>*@
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <!-- Search Section -->
+    <div class="mb-3">
+        @using (Html.BeginForm("AssignApplicants", "Recruiter", FormMethod.Get))
         {
-            <tr>
-                <td>@item.ApplicantFullName</td>
-                <td>@item.LastQualification</td>
-                <td>@item.JobTitle</td>
-                <td>@item.CompanyName</td>
-                <td>@(item.TentativeDate?.ToString("dd-MMM-yyyy") ?? "-")</td>
-                <td>@(string.IsNullOrEmpty(item.ApplicantStatus) ? "Pending" : item.ApplicantStatus)</td>
-                @*<td>@item.MappedJobStatus</td>*@
-                <td>
-                    @Html.ActionLink("Edit", "EditApplicantStatus", new { id = item.JobApplicantId }, new { @class = "btn btn-sm btn-outline-primary" })
-
-                </td>
-            </tr>
+            <div class="row g-2 align-items-center">
+                <div class="col-auto"><strong>Search By:</strong></div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Qualification", true) Qualification</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Company") Company</div>
+                <div class="col-auto">@Html.RadioButton("SearchBy", "Status") Status</div>
+                <div class="col-auto">
+                    @Html.TextBox("Search", Request.QueryString["Search"], new { @class = "form-control", placeholder = "Enter keyword" })
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
 
-@Html.PagedListPager(Model, page => Url.Action("AssignApplicants", new { page, SearchBy = Request.QueryString["SearchBy"], Search = Request.QueryString["Search"] })
-, new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })
+    <!-- Applicants Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Applicant Name</th>
+                    <th>Qualification</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Tentative Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-muted text-center">No applicants found.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ApplicantFullName</td>
+                            <td>@item.LastQualification</td>
+                            <td>@item.JobTitle</td>
+                            <td>@item.CompanyName</td>
+                            <td>@item.TentativeDate?.ToString("dd-MMM-yyyy")</td>
+                            <td>@(string.IsNullOrWhiteSpace(item.ApplicantStatus) ? "Pending" : item.ApplicantStatus)</td>
+                            <td>
+                                @Html.ActionLink("Edit", "EditApplicantStatus", new { id = item.JobApplicantId }, new { @class = "btn btn-sm btn-outline-primary" })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mb-3 text-center">
+        @Html.PagedListPager(Model, page => Url.Action("AssignApplicants", new
+        {
+            page,
+            SearchBy = Request.QueryString["SearchBy"],
+            Search = Request.QueryString["Search"]
+        }),
+        new PagedListRenderOptions
+        {
+            Display = PagedListDisplayMode.IfNeeded,
+            DisplayPageCountAndCurrentLocation = true,
+            UlElementClasses = new[] { "pagination", "justify-content-center" },
+            LiElementClasses = new[] { "page-item" }
+        })
+    </div>
+
+    <div>
+        @Html.ActionLink("Back to Dashboard", "Dashboard", "Recruiter", null, new { @class = "btn btn-outline-secondary" })
+    </div>
+</div>

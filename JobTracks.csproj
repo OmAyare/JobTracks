@@ -180,10 +180,12 @@
     <Compile Include="Common\RemoteClientServer.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Filters\AuthorizeRolesAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ForgotPassword.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -230,7 +232,6 @@
       <DependentUpon>JobTracksEntities.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\User.cshtml" />
@@ -238,6 +239,7 @@
     <Content Include="Areas\Admin\Views\Admin\Dashboard.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout1.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Create_Role.cshtml" />
+    <Content Include="image\employeelogo.jpg" />
     <Content Include="image\logo.png" />
     <Content Include="image\logo1.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -273,6 +275,11 @@
     <Content Include="Areas\Recruiter\Views\Recruiter\View_Applcants.cshtml" />
     <Content Include="Areas\Recruiter\Views\Recruiter\Delete.cshtml" />
     <Content Include="image\SquidGame.webp" />
+    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\ChangePassword.cshtml" />
+    <Content Include="Areas\TeamLeader\Views\TeamLeader\ViewProfile.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Recruiter\ChangePassword.cshtml" />
+    <Content Include="Areas\Recruiter\Views\Recruiter\ViewProfile.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -299,9 +306,15 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Home\ForgotPassword.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\ViewProfile.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\ChangePassword.cshtml" />
+    <Content Include="Views\Test\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="EmployeePhotos\" />
     <Folder Include="Resumes\" />
     <Folder Include="Views\Error\" />
     <Folder Include="Views\TeamLeader\" />

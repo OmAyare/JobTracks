@@ -6,12 +6,12 @@ using System.Web.Mvc;
 
 namespace JobTracks.Controllers
 {
-    public class ErrorController : Controller
+    public class TestController : Controller
     {
-        // GET: Error
-        public ActionResult NotFound()
+        // GET: Test
+        public ActionResult Index()
         {
             return View();
         }
     }
-} 
+}

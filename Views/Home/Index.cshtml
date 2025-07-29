@@ -12,7 +12,7 @@
     <title>Login</title>
 
     <style>
-          body {
+        body {
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -136,57 +136,34 @@
             margin-top: 10px;
         }
 
-      /*  .curtain {
+        .curtain {
             position: fixed;
-            width: 250%;
-            height: 250%;
-            background: white;
-            bottom: -150%;
-            right: -150%;
-            transform: rotate(45deg);
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #ffffff 0%, #eeeeee 100%);
+            transform-origin: bottom right;
+            transform: scale(0);
             display: none;
-            animation: curtainSlide 2.5s ease-in-out forwards;
             z-index: 9999;
-            pointer-events: none;
+            animation: peelUp 1.8s ease-in-out forwards;
         }
 
-        @@keyframes curtainSlide {
+        @@keyframes peelUp {
             0% {
-                bottom: -150%;
-                right: -150%;
+                transform: scale(0) rotate(0deg);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.1) rotate(-5deg);
+                opacity: 0.9;
             }
 
             100% {
-                bottom: 150%;
-                right: 150%;
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
             }
-        }*/
-      .curtain {
-                position: fixed;
-                width: 100vw;
-                height: 100vh;
-                background: linear-gradient(135deg, #ffffff 0%, #eeeeee 100%);
-                transform-origin: bottom right;
-                transform: scale(0);
-                display: none;
-                z-index: 9999;
-                animation: peelUp 1.8s ease-in-out forwards;
-            }
-
-            @@keyframes peelUp {
-                0% {
-                    transform: scale(0) rotate(0deg);
-                    opacity: 0.3;
-                }
-                50% {
-                    transform: scale(1.1) rotate(-5deg);
-                    opacity: 0.9;
-                }
-                100% {
-                    transform: scale(1) rotate(0deg);
-                    opacity: 1;
-                }
-            }
+        }
 
         .video-section {
             position: absolute;
@@ -195,16 +172,17 @@
             top: 20%;
         }
 
-        .video-section video {
-            width: 360px;
-            border-radius: 16px;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
-        }
-        .video-section h2 {
+            .video-section video {
+                width: 360px;
+                border-radius: 16px;
+                box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+            }
+
+            .video-section h2 {
                 margin-top: 15px;
                 font-size: 20px;
                 color: #222;
-        }
+            }
     </style>
 </head>
 <body>
@@ -277,7 +255,7 @@
         <!-- Login Form -->
         <div class="loginbox">
             <h2>Login</h2>
-            @using (Html.BeginForm())
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { autocomplete = "off" }))
             {
                 @Html.AntiForgeryToken()
 

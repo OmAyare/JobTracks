@@ -1,36 +1,52 @@
 ﻿@model JobTracks.Areas.Recruiter.Data.EditApplicantStatusViewModel
 
-
 @{
     ViewBag.Title = "Edit Applicant Status";
+    Layout = "~/Areas/Recruiter/Views/Shared/_Layout1.cshtml";
 }
 
-<h2>Edit Applicant Status</h2>
+<h2 class="mb-4">Edit Applicant Status</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
+    <!-- Show any model-level errors -->
+    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+    <!-- Applicant Name -->
     <div class="form-group">
         <label>Applicant Name</label>
-        <p>@Model.ApplicantName</p>
+        <p class="form-control-static">@Model.ApplicantName</p>
     </div>
 
-    <div class="form-group">
-        @Html.HiddenFor(model => model.JobApplicantId)
-    </div>
+    <!-- Hidden field for Job Applicant ID -->
+    @Html.HiddenFor(model => model.JobApplicantId)
 
+    <!-- Assign to Job -->
     <div class="form-group">
         <label>Assign to Job</label>
-        @*@Html.DropDownListFor(m => m.SelectedJobId, Model.JobOptions, "Choose Job", new { @class = "form-control" })*@
-        @Html.DropDownListFor(m => m.SelectedStatus, Model.StatusOptions)
+        @Html.DropDownListFor(m => m.SelectedJobId, Model.JobOptions, "Choose Job", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.SelectedJobId, "", new { @class = "text-danger" })
     </div>
 
+    <!-- Status -->
     <div class="form-group">
         <label>Status</label>
-        @*@Html.DropDownListFor(m => m.SelectedStatus, Model.StatusOptions, "Select Status", new { @class = "form-control" })*@
-        @Html.DropDownListFor(m => m.SelectedJobId, Model.JobOptions)
+        @Html.DropDownListFor(m => m.SelectedStatus, Model.StatusOptions, "Select Status", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.SelectedStatus, "", new { @class = "text-danger" })
     </div>
 
+    <div>
+        @if (Model.PlacedCount.HasValue && Model.RequiredCount.HasValue)
+        {
+            <small class="form-text text-muted">
+                @Model.PlacedCount out of @Model.RequiredCount slots filled
+            </small>
+        }
+    </div>
+
+
+    <!-- Submit -->
     <button type="submit" class="btn btn-primary">Update</button>
 }
