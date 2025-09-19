@@ -67,6 +67,217 @@ Dashboard:
      .Role-based redirection and session management
      .File upload restriction on images
      
+📁 Folder structure
+    App_Start/
+    ├── BundleConfig.cs
+    ├── FilterConfig.cs
+    └── RouteConfig.cs
+Areas/
+    ├── Admin/
+        ├── Controllers/
+            └── AdminController.cs
+        ├── Data/
+            ├── Applicant_Master.cs
+            ├── Applicant_Masters.cs
+            ├── Company_Master.cs
+            ├── Company_Masters.cs
+            ├── Job_Applicant_Master.cs
+            ├── Job_Applicant_Masters.cs
+            ├── Job_Master.cs
+            ├── Job_Mastesr.cs
+            ├── JobTracksEntities.Context.cs
+            ├── JobTracksEntities.Context.tt
+            ├── JobTracksEntities.cs
+            ├── JobTracksEntities.Designer.cs
+            ├── JobTracksEntities.edmx
+            ├── JobTracksEntities.edmx.diagram
+            ├── JobTracksEntities.tt
+            ├── Role.cs
+            ├── Roles.cs
+            ├── User.cs
+            └── Users.cs
+        ├── Views/
+            ├── Admin/
+                ├── AssignWork.cshtml
+                ├── AssignWorkDelete.cshtml
+                ├── AssignWorkEdit.cshtml
+                ├── ChangePassword.cshtml
+                ├── Company.cshtml
+                ├── Create_Role.cshtml
+                ├── Create.cshtml
+                ├── CreateCompany.cshtml
+                ├── Dashboard.cshtml
+                ├── Delete.cshtml
+                ├── Edit.cshtml
+                ├── User.cshtml
+                └── ViewProfile.cshtml
+            ├── Shared/
+                ├── _Layout.cshtml
+                └── _Layout1.cshtml
+            ├── _ViewStart.cshtml
+            └── web.config
+        └── AdminAreaRegistration.cs
+    ├── Recruiter/
+        ├── Controllers/
+            └── RecruiterController.cs
+        ├── Data/
+            ├── AssignedJobViewModel.cs
+            ├── EditApplicantStatusViewModel.cs
+            └── RecruiterApplicantListViewModel.cs
+        ├── Views/
+            ├── Recruiter/
+                ├── Add_Applicants.cshtml
+                ├── AssignApplicants.cshtml
+                ├── ChangePassword.cshtml
+                ├── Dashboard.cshtml
+                ├── Delete.cshtml
+                ├── EditApplicantStatus.cshtml
+                ├── View_Applcants.cshtml
+                └── ViewProfile.cshtml
+            ├── Shared/
+                ├── _Layout.cshtml
+                └── _Layout1.cshtml
+            ├── _ViewStart.cshtml
+            └── web.config
+        └── RecruiterAreaRegistration.cs
+    └── TeamLeader/
+        ├── Controllers/
+            └── TeamLeaderController.cs
+        ├── Data/
+            └── RecruiterSummaryViewModel.cs
+        ├── Views/
+            ├── Shared/
+                ├── _Layout.cshtml
+                └── _Layout1.cshtml
+            ├── TeamLeader/
+                ├── AssignWork.cshtml
+                ├── AssignWorkDelete.cshtml
+                ├── AssignWorkEdit.cshtml
+                ├── ChangePassword.cshtml
+                ├── Company.cshtml
+                ├── CreateCompany.cshtml
+                ├── Dashboard.cshtml
+                ├── RecruiterWorkDetail.cshtml
+                └── ViewProfile.cshtml
+            ├── _ViewStart.cshtml
+            └── web.config
+        └── TeamLeaderAreaRegistration.cs
+Common/
+    ├── CurrentDateAttribute.cs
+    ├── DateRangeAttribute.cs
+    ├── ParitalCacheAttribute.cs
+    └── RemoteClientServer.cs
+Content/
+    ├── Animations/
+        └── Welcome.mp4
+    ├── bootstrap-grid.css
+    ├── bootstrap-grid.css.map
+    ├── bootstrap-grid.min.css
+    ├── bootstrap-grid.min.css.map
+    ├── bootstrap-grid.rtl.css
+    ├── bootstrap-grid.rtl.css.map
+    ├── bootstrap-grid.rtl.min.css
+    ├── bootstrap-grid.rtl.min.css.map
+    ├── bootstrap-reboot.css
+    ├── bootstrap-reboot.css.map
+    ├── bootstrap-reboot.min.css
+    ├── bootstrap-reboot.min.css.map
+    ├── bootstrap-reboot.rtl.css
+    ├── bootstrap-reboot.rtl.css.map
+    ├── bootstrap-reboot.rtl.min.css
+    ├── bootstrap-reboot.rtl.min.css.map
+    ├── bootstrap-utilities.css
+    ├── bootstrap-utilities.css.map
+    ├── bootstrap-utilities.min.css
+    ├── bootstrap-utilities.min.css.map
+    ├── bootstrap-utilities.rtl.css
+    ├── bootstrap-utilities.rtl.css.map
+    ├── bootstrap-utilities.rtl.min.css
+    ├── bootstrap-utilities.rtl.min.css.map
+    ├── bootstrap.css
+    ├── bootstrap.css.map
+    ├── bootstrap.min.css
+    ├── bootstrap.min.css.map
+    ├── bootstrap.rtl.css
+    ├── bootstrap.rtl.css.map
+    ├── bootstrap.rtl.min.css
+    ├── bootstrap.rtl.min.css.map
+    ├── PagedList.css
+    └── Site.css
+Controllers/
+    ├── ErrorController.cs
+    └── HomeController.cs
+EmployeePhotos/
+    └── 561129d2-9c3d-4035-b6ac-bb0faf0a2c66.png
+Filters/
+    └── AuthorizeRolesAttribute.cs
+image/
+    ├── employeelogo.jpg
+    ├── logo.png
+    ├── logo1.png
+    └── SquidGame.webp
+Models/
+    ├── ForgotPassword.cs
+    └── Login.cs
+Properties/
+    └── AssemblyInfo.cs
+Resumes/
+    ├── January.pdf
+    ├── march.pdf
+    └── May.pdf
+Scripts/
+    ├── bootstrap.bundle.js
+    ├── bootstrap.bundle.js.map
+    ├── bootstrap.bundle.min.js
+    ├── bootstrap.bundle.min.js.map
+    ├── bootstrap.esm.js
+    ├── bootstrap.esm.js.map
+    ├── bootstrap.esm.min.js
+    ├── bootstrap.esm.min.js.map
+    ├── bootstrap.js
+    ├── bootstrap.js.map
+    ├── bootstrap.min.js
+    ├── bootstrap.min.js.map
+    ├── jquery-3.7.1.intellisense.js
+    ├── jquery-3.7.1.js
+    ├── jquery-3.7.1.min.js
+    ├── jquery-3.7.1.min.map
+    ├── jquery-3.7.1.slim.js
+    ├── jquery-3.7.1.slim.min.js
+    ├── jquery-3.7.1.slim.min.map
+    ├── jquery.validate-vsdoc.js
+    ├── jquery.validate.js
+    ├── jquery.validate.min.js
+    ├── jquery.validate.unobtrusive.js
+    ├── jquery.validate.unobtrusive.min.js
+    └── modernizr-2.8.3.js
+Views/
+    ├── Error/
+        └── NotFound.cshtml
+    ├── Home/
+        ├── About.cshtml
+        ├── Contact.cshtml
+        ├── ForgotPassword.cshtml
+        └── Index.cshtml
+    ├── Shared/
+        ├── _Layout.cshtml
+        ├── Error.cshtml
+        └── NotFound.cshtml
+    ├── _ViewStart.cshtml
+    └── Web.config
+.gitattributes
+.gitignore
+favicon.ico
+Global.asax
+Global.asax.cs
+Jobtracks_Updated_Query.sql
+JobTracks.csproj
+JobTracks.sln
+packages.config
+README.md
+Web.config
+Web.Debug.config
+Web.Release.config
 📄 License
      .This project is licensed for educational and organizational use.
 
