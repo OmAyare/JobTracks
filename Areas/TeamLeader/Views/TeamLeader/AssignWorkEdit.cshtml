@@ -47,7 +47,11 @@
             @Html.ValidationMessageFor(m => m.Recruiter_Id, "", new { @class = "text-danger" })
 
             @Html.LabelFor(m => m.TentativeDate)
-            @Html.TextBoxFor(m => m.TentativeDate, new { @class = "form-control", type = "date" })
+            <input type="date"
+                   name="DateOfBirth"
+                   class="form-control"
+                   value="@(Model.TentativeDate?.ToString("yyyy-MM-dd"))" />
+
             @Html.ValidationMessageFor(m => m.TentativeDate, "", new { @class = "text-danger" })
         </div>
 

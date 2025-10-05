@@ -205,49 +205,75 @@
 
         <div class="curtain" id="curtain"></div>
 
+        @*<script>
+                const video = document.getElementById('welcome-video');
+                const curtain = document.getElementById('curtain');
+                const welcomeSection = document.getElementById('welcome-section');
+
+                video.onloadeddata = function () {
+                    console.log("✅ Video loaded.");
+                };
+
+                video.onplay = function () {
+                    console.log("▶️ Playing video.");
+                };
+
+                video.onerror = function () {
+                    console.error("❌ Video failed to load.");
+                    alert("❌ Video failed to load.");
+                };
+
+                video.onended = function () {
+                    console.log("✅ Video ended, starting curtain.");
+
+                    // Hide the video section
+                    welcomeSection.style.display = 'none';
+
+                    // Show curtain
+                    curtain.style.display = 'block';
+
+                    setTimeout(function () {
+                        var roleId = @ViewBag.RoleId;
+                        var redirectUrl = "";
+
+                        if (roleId === 1)
+                            redirectUrl = '@Url.Action("Dashboard", "Admin", new { area = "Admin" })';
+                        else if (roleId === 2)
+                            redirectUrl = '@Url.Action("Dashboard", "TeamLeader", new { area = "TeamLeader" })';
+                        else if (roleId === 3)
+                            redirectUrl = '@Url.Action("Dashboard", "Recruiter", new { area = "Recruiter" })';
+                        else
+                            redirectUrl = '@Url.Action("NotFound", "Error")';
+
+                        window.location.href = redirectUrl;
+                    }, 2500); // match curtain animation duration
+                };
+            </script>*@
         <script>
             const video = document.getElementById('welcome-video');
-            const curtain = document.getElementById('curtain');
             const welcomeSection = document.getElementById('welcome-section');
+            const curtain = document.getElementById('curtain');
 
-            video.onloadeddata = function () {
-                console.log("✅ Video loaded.");
-            };
+             setTimeout(function () {
+                  welcomeSection.style.display = 'none';
+                  curtain.style.display = 'block';
 
-            video.onplay = function () {
-                console.log("▶️ Playing video.");
-            };
+                    setTimeout(function () {
+                        var roleId = @ViewBag.RoleId;
+                        var redirectUrl = "";
 
-            video.onerror = function () {
-                console.error("❌ Video failed to load.");
-                alert("❌ Video failed to load.");
-            };
+                        if (roleId === 1)
+                            redirectUrl = '@Url.Action("Dashboard", "Admin", new { area = "Admin" })';
+                        else if (roleId === 2)
+                            redirectUrl = '@Url.Action("Dashboard", "TeamLeader", new { area = "TeamLeader" })';
+                        else if (roleId === 3)
+                            redirectUrl = '@Url.Action("Dashboard", "Recruiter", new { area = "Recruiter" })';
+                        else
+                            redirectUrl = '@Url.Action("NotFound", "Error")';
 
-            video.onended = function () {
-                console.log("✅ Video ended, starting curtain.");
-
-                // Hide the video section
-                welcomeSection.style.display = 'none';
-
-                // Show curtain
-                curtain.style.display = 'block';
-
-                setTimeout(function () {
-                    var roleId = @ViewBag.RoleId;
-                    var redirectUrl = "";
-
-                    if (roleId === 1)
-                        redirectUrl = '@Url.Action("Dashboard", "Admin", new { area = "Admin" })';
-                    else if (roleId === 2)
-                        redirectUrl = '@Url.Action("Dashboard", "TeamLeader", new { area = "TeamLeader" })';
-                    else if (roleId === 3)
-                        redirectUrl = '@Url.Action("Dashboard", "Recruiter", new { area = "Recruiter" })';
-                    else
-                        redirectUrl = '@Url.Action("NotFound", "Error")';
-
-                    window.location.href = redirectUrl;
-                }, 2500); // match curtain animation duration
-            };
+                        window.location.href = redirectUrl;
+                    }, 2500); // Curtain animation delay
+                }, 3000); // Video duration (adjust if needed)
         </script>
     }
     else

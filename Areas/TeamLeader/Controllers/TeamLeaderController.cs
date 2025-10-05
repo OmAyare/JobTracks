@@ -331,8 +331,8 @@ namespace JobTracks.Areas.TeamLeader.Controllers
                 return HttpNotFound();
             }
             ViewBag.CompanyList = new SelectList(db.Company_Master, "Company_id", "Company_Name");
-            ViewBag.TLList = new SelectList(db.Users.Where(x => x.User_id == 2), "User_id", "Username");
-            ViewBag.RecruiterList = new SelectList(db.Users.Where(x => x.User_id == 3), "User_id", "Username");
+            ViewBag.TLList = new SelectList(db.Users.Where(x => x.Role_id == 2), "User_id", "Username");
+            ViewBag.RecruiterList = new SelectList(db.Users.Where(x => x.Role_id == 3), "User_id", "Username");
             return View(tblAssign);
         }
 

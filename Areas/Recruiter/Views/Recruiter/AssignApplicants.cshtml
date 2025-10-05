@@ -66,17 +66,17 @@
                 {
                     foreach (var item in Model)
                     {
-                        <tr>
-                            <td>@item.ApplicantFullName</td>
-                            <td>@item.LastQualification</td>
-                            <td>@item.JobTitle</td>
-                            <td>@item.CompanyName</td>
-                            <td>@item.TentativeDate?.ToString("dd-MMM-yyyy")</td>
-                            <td>@(string.IsNullOrWhiteSpace(item.ApplicantStatus) ? "Pending" : item.ApplicantStatus)</td>
-                            <td>
-                                @Html.ActionLink("Edit", "EditApplicantStatus", new { id = item.JobApplicantId }, new { @class = "btn btn-sm btn-outline-primary" })
-                            </td>
-                        </tr>
+            <tr>
+                <td>@item.ApplicantFullName</td>
+                <td>@item.LastQualification</td>
+                <td>@item.JobTitle</td>
+                <td>@item.CompanyName</td>
+                <td>@(item.TentativeDate.HasValue ? item.TentativeDate.Value.ToString("dd-MMM-yyyy") : "_")</td>
+                <td>@(string.IsNullOrWhiteSpace(item.ApplicantStatus) ? "Pending" : item.ApplicantStatus)</td>
+                <td>
+                    @Html.ActionLink("Edit", "EditApplicantStatus", new { id = item.JobApplicantId }, new { @class = "btn btn-sm btn-outline-primary" })
+                </td>
+            </tr>
                     }
                 }
             </tbody>

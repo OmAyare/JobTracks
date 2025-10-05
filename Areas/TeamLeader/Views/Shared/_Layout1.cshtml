@@ -170,8 +170,8 @@
             <button class="menu-toggle" onclick="toggleSidebar()">
                 <i class="bi bi-list"></i>
             </button>
-            <img src="@Url.Content("~/image/logo1.png")" alt="Logo" onclick="location.href='@Url.Action("Dashboard", "Admin")'" />
-            <h2 onclick="location.href='@Url.Action("Dashboard", "Admin")'">Job Tracks</h2>
+            <img src="@Url.Content("~/image/logo1.png")" alt="Logo" onclick="location.href='@Url.Action("Dashboard", "TeamLeader")'" />
+            <h2 onclick="location.href='@Url.Action("Dashboard", "TeamLeader")'">Job Tracks</h2>
         </div>
         <div class="user-info">
             <div class="dropdown" style="position: relative;">
@@ -193,8 +193,8 @@
                         <small>@Session["Email"]</small>
                     </li>
                     <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="@Url.Action("ViewProfile", "Admin")"><i class="bi bi-person-vcard"></i> View Details</a></li>
-                    <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Admin")"><i class="bi bi-lock"></i> Change Password</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("ViewProfile", "TeamLeader")"><i class="bi bi-person-vcard"></i> View Details</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "TeamLeader")"><i class="bi bi-lock"></i> Change Password</a></li>
                     <a class="dropdown-item" href="#" onclick="confirmLogout()"><i class="bi bi-box-arrow-right"></i> Sign Out</a>
                 </ul>
             </div>

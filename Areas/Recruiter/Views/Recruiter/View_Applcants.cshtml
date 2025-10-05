@@ -45,7 +45,7 @@
                     <th>@Html.DisplayNameFor(model => model.First().YearOfExperience)</th>
                     <th>@Html.DisplayNameFor(model => model.First().Resume)</th>
                     <th>@Html.DisplayNameFor(model => model.First().Status)</th>
-                    <th>Action</th>
+                    @*<th>Action</th>*@
                 </tr>
             </thead>
             <tbody>
@@ -76,9 +76,9 @@
                                 }
                             </td>
                             <td>@item.Status</td>
-                            <td>
-                                @Html.ActionLink("Delete", "Delete", new { id = item.AppLicant_id }, new { @class = "btn btn-sm btn-outline-danger" })
-                            </td>
+                            <!--<td>-->
+                              @*  @Html.ActionLink("Delete", "Delete", new { id = item.AppLicant_id }, new { @class = "btn btn-sm btn-outline-danger" })*@
+                            <!--</td>-->
                         </tr>
                     }
                 }
